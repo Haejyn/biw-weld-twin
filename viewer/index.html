@@ -3,10 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>용접 라인 디지털 트윈</title>
+<title>BIW Weld Twin</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect x=%222%22 y=%222%22 width=%2212%22 height=%2212%22 rx=%223%22 fill=%22%235ee1d4%22/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="style.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%226%22 fill=%22%235ee1d4%22/%3E%3C/svg%3E">
 <script type="importmap">
 {
   "imports": {
@@ -17,55 +20,227 @@
 </script>
 </head>
 <body>
-<header class="top">
-  <h1>용접 라인 디지털 트윈</h1>
-  <nav class="tabs" id="designTabs" role="tablist"></nav>
-</header>
+<div id="app" class="app">
 
-<main class="twin">
-  <section class="stage" id="stage">
-    <div class="loading" id="loading">불러오는 중</div>
-    <div class="tip" id="tip" hidden></div>
-    <div class="player">
-      <button class="play" id="playBtn" aria-label="재생">
-        <svg viewBox="0 0 24 24" class="ic-play"><path d="M8 5.5v13l11-6.5z"/></svg>
-        <svg viewBox="0 0 24 24" class="ic-pause"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
-      </button>
-      <input type="range" id="timeSlider" min="0" max="1" step="0.01" value="0" aria-label="시간">
-      <span class="time" id="timeLabel">0.0 s</span>
-      <div class="speeds" id="speeds">
-        <button data-speed="1">1×</button>
-        <button data-speed="4" class="on">4×</button>
-        <button data-speed="10">10×</button>
+  <!-- 메뉴 막대 -->
+  <header class="menubar">
+    <div class="brand"><i class="brand-mark"></i>BIW Weld Twin</div>
+    <nav class="menus" id="menus">
+      <div class="menu" data-menu="file">
+        <button class="menu-btn">파일</button>
+        <div class="menu-pop">
+          <button data-act="snapshot">뷰포트 이미지 저장<kbd>PNG</kbd></button>
+          <button data-act="reload">데이터 다시 불러오기</button>
+        </div>
       </div>
-    </div>
-  </section>
+      <div class="menu" data-menu="view">
+        <button class="menu-btn">보기</button>
+        <div class="menu-pop">
+          <div class="menu-sec">시점 프리셋</div>
+          <button data-act="view:front">정면<kbd>1</kbd></button>
+          <button data-act="view:side">측면<kbd>2</kbd></button>
+          <button data-act="view:top">위<kbd>3</kbd></button>
+          <button data-act="view:iso">등각<kbd>4</kbd></button>
+          <button data-act="fit">전체 맞춤<kbd>F</kbd></button>
+          <hr>
+          <button data-act="toggle:labels" data-check>타점 라벨</button>
+          <button data-act="toggle:reach" data-check>로봇 도달 범위</button>
+          <hr>
+          <div class="menu-sec">로봇 메시</div>
+          <button data-act="mesh:stl" data-radio="mesh">STL (충돌용, 가벼움)</button>
+          <button data-act="mesh:dae" data-radio="mesh">DAE (외형, 매끈함)</button>
+          <hr>
+          <button data-act="dock:left" data-check>왼쪽 도크</button>
+          <button data-act="dock:right" data-check>오른쪽 도크</button>
+          <button data-act="dock:bottom" data-check>아래 도크</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="sim">
+        <button class="menu-btn">시뮬레이션</button>
+        <div class="menu-pop">
+          <button data-act="play">재생 / 정지<kbd>Space</kbd></button>
+          <button data-act="rewind">처음으로<kbd>Home</kbd></button>
+          <hr>
+          <button data-act="speed:1" data-radio="speed">속도 1×</button>
+          <button data-act="speed:4" data-radio="speed">속도 4×</button>
+          <button data-act="speed:10" data-radio="speed">속도 10×</button>
+          <hr>
+          <button data-act="line:play">혼류 라인 재생 / 정지</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="ai">
+        <button class="menu-btn">AI</button>
+        <div class="menu-pop">
+          <button data-act="ai">AI 설계 검토 모드</button>
+          <button data-act="ai:reset">설계 변수 A안으로</button>
+          <button data-act="log">검증 로그 보기</button>
+        </div>
+      </div>
+      <div class="menu" data-menu="help">
+        <button class="menu-btn">도움말</button>
+        <div class="menu-pop">
+          <button data-act="about">가정·출처</button>
+          <button data-act="keys">단축키</button>
+        </div>
+      </div>
+    </nav>
+    <div class="doc-title" id="docTitle"></div>
+  </header>
 
-  <aside class="side">
-    <div class="card" id="numbers"></div>
-    <div class="card legend" id="legend">
-      <div class="lg"><i class="dot r0"></i><span id="lg0">로봇 1 담당</span></div>
-      <div class="lg"><i class="dot r1"></i><span id="lg1">로봇 2 담당</span></div>
-      <div class="lg"><i class="x">×</i>못 쏘는 타점</div>
-      <div class="lg"><i class="dot ghost"></i>비어 있는 후보 위치</div>
+  <!-- 도구 막대 -->
+  <div class="toolbar" id="toolbar">
+    <button class="tb drawer-btn" data-act="drawer:left" data-icon="dockLeft" data-tip="장면 도크"></button>
+    <span class="tb-sep drawer-btn"></span>
+    <div class="tb-group" role="radiogroup">
+      <button class="tb" data-tool="select" data-icon="cursor" data-tip="선택 (클릭) · 끌면 회전"></button>
+      <button class="tb" data-tool="orbit" data-icon="orbit" data-tip="회전"></button>
+      <button class="tb" data-tool="pan" data-icon="pan" data-tip="이동"></button>
+      <button class="tb" data-act="fit" data-icon="fit" data-tip="전체 맞춤 (F)"></button>
     </div>
-  </aside>
-</main>
-
-<section class="line">
-  <div class="line-head">
-    <h2>혼류 라인 · 60대 투입</h2>
-    <div class="line-ctl">
-      <button class="play small" id="linePlay" aria-label="라인 재생">
-        <svg viewBox="0 0 24 24" class="ic-play"><path d="M8 5.5v13l11-6.5z"/></svg>
-        <svg viewBox="0 0 24 24" class="ic-pause"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
-      </button>
-      <button class="chip" id="lineReset">처음부터</button>
-      <span class="line-key"><i class="car old"></i>기존 차 <i class="car new"></i>신차</span>
+    <span class="tb-sep"></span>
+    <div class="tb-group">
+      <button class="tb" data-act="view:front" data-icon="front" data-tip="정면 (1)"></button>
+      <button class="tb" data-act="view:side" data-icon="side" data-tip="측면 (2)"></button>
+      <button class="tb" data-act="view:top" data-icon="top" data-tip="위 (3)"></button>
+      <button class="tb" data-act="view:iso" data-icon="iso" data-tip="등각 (4)"></button>
     </div>
+    <span class="tb-sep"></span>
+    <div class="tb-group">
+      <button class="tb" data-act="toggle:body" data-icon="body" data-tip="차체 표시"></button>
+      <button class="tb" data-act="toggle:spots" data-icon="spots" data-tip="타점 표시"></button>
+      <button class="tb" data-act="toggle:robots" data-icon="robot" data-tip="로봇 표시"></button>
+      <button class="tb" data-act="toggle:reach" data-icon="reach" data-tip="도달 범위 (근사)"></button>
+      <button class="tb" data-act="toggle:labels" data-icon="label" data-tip="타점 라벨"></button>
+    </div>
+    <span class="tb-sep"></span>
+    <div class="tb-group">
+      <button class="tb" data-act="rewind" data-icon="rewind" data-tip="처음으로 (Home)"></button>
+      <button class="tb" data-act="play" data-icon="play" data-tip="재생 / 정지 (Space)" id="tbPlay"></button>
+    </div>
+    <span class="tb-fill"></span>
+    <span class="tb-sep drawer-btn"></span>
+    <button class="tb drawer-btn" data-act="drawer:right" data-icon="dockRight" data-tip="속성 도크"></button>
   </div>
-  <div class="alts" id="alts"></div>
-</section>
+
+  <!-- 작업 영역 -->
+  <div class="work" id="work">
+    <aside class="dock dock-left" id="dockLeft">
+      <section class="panel" data-panel="scene">
+        <h2 class="panel-h"><i class="caret"></i>장면</h2>
+        <div class="panel-b tree" id="tree"></div>
+      </section>
+      <section class="panel" data-panel="docs">
+        <h2 class="panel-h"><i class="caret"></i>설계안</h2>
+        <div class="panel-b doclist" id="docList"></div>
+      </section>
+    </aside>
+
+    <section class="center">
+      <div class="viewport" id="stage">
+        <div class="vp-label" id="vpLabel">등각 · 투시</div>
+        <div class="vp-mode" id="vpMode"></div>
+        <div class="labels" id="labels"></div>
+        <div class="tip" id="tip" hidden></div>
+        <div class="loading" id="loading">불러오는 중…</div>
+      </div>
+      <div class="splitter" id="splitter" title="끌어서 크기 조절"></div>
+      <section class="dock dock-bottom" id="dockBottom">
+        <div class="tabs" id="bottomTabs">
+          <button data-tab="timeline" class="on">타임라인</button>
+          <button data-tab="line">혼류 라인</button>
+          <button data-tab="log">로그 <span class="count" id="logCount">0</span></button>
+        </div>
+        <div class="tab-body" data-body="timeline">
+          <div class="tl-bar">
+            <button class="tb" data-act="rewind" data-icon="rewind" data-tip="처음으로"></button>
+            <button class="tb" data-act="play" data-icon="play" data-tip="재생 / 정지" id="tlPlay"></button>
+            <span class="mono tl-time" id="timeLabel">0.00 s</span>
+            <div class="seg" id="speeds">
+              <button data-speed="1">1×</button><button data-speed="4">4×</button><button data-speed="10">10×</button>
+            </div>
+            <span class="tl-legend" id="tlLegend"></span>
+          </div>
+          <canvas class="scrub" id="scrub"></canvas>
+          <div class="tl-off" id="tlOff" hidden>AI 설계 검토 모드에서는 재생이 없습니다 — 설계안을 고르면 돌아옵니다.</div>
+        </div>
+        <div class="tab-body" data-body="line" hidden>
+          <div class="tl-bar">
+            <button class="tb" data-act="line:reset" data-icon="rewind" data-tip="처음부터"></button>
+            <button class="tb" data-act="line:play" data-icon="play" data-tip="라인 재생 / 정지" id="linePlay"></button>
+            <span class="mono tl-time" id="lineInfo"></span>
+            <span class="tl-legend"><i class="car old"></i>기존 차 <i class="car new"></i>신차 <i class="sw over"></i>택트 초과 <i class="sw stop"></i>정지</span>
+          </div>
+          <div class="alts" id="alts"></div>
+        </div>
+        <div class="tab-body" data-body="log" hidden>
+          <ol class="log mono" id="log"></ol>
+        </div>
+      </section>
+    </section>
+
+    <aside class="dock dock-right" id="dockRight">
+      <section class="panel" data-panel="ai" id="aiPanel" hidden>
+        <h2 class="panel-h"><i class="caret"></i>설계 변수</h2>
+        <div class="panel-b" id="aiFields"></div>
+      </section>
+      <section class="panel" data-panel="props">
+        <h2 class="panel-h"><i class="caret"></i>속성</h2>
+        <div class="panel-b" id="inspector"></div>
+      </section>
+      <section class="panel" data-panel="results">
+        <h2 class="panel-h"><i class="caret"></i><span id="resultsTitle">해석 결과</span></h2>
+        <div class="panel-b" id="results"></div>
+      </section>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+  </div>
+
+  <!-- 상태 막대 -->
+  <footer class="statusbar mono">
+    <span>단위 mm</span>
+    <span id="stSel">선택 없음</span>
+    <span id="stCursor" class="st-cursor">X — Y —</span>
+    <span class="st-fill"></span>
+    <span id="stFps">— fps</span>
+    <span id="stFk">FK —</span>
+    <span id="stAi">AI 파리티 —</span>
+  </footer>
+</div>
+
+<dialog class="dlg" id="aboutDlg">
+  <div class="dlg-h">가정·출처<button class="dlg-x" data-close aria-label="닫기">×</button></div>
+  <div class="dlg-b">
+    <table class="kv wide">
+      <thead><tr><th>진짜 (공개 자료)</th><th>가정</th></tr></thead>
+      <tbody>
+        <tr><td>로봇 기구학·관절 한계·속도·외형 — ROS-Industrial <code>kuka_experimental</code> KR210 L150</td><td>차체 형상 (단순화한 실·B필러·크로스멤버)과 설계 변수 범위</td></tr>
+        <tr><td>기존 라인 작업·선후관계 — Scholl(1993) SALBP ARC83</td><td>용접건 치수, 타점당 0.7 s, 이송·클램프 15 s, 가감속 보정</td></tr>
+        <tr><td>라인밸런싱 풀이기 — 공개 최적해 12문제 중 11 일치</td><td>신차 작업시간 배수, 여유창 20 %, 비용 단가 (상대 단위)</td></tr>
+      </tbody>
+    </table>
+    <ul class="dlg-list">
+      <li>실제 기아 데이터는 쓰지 않았다.</li>
+      <li>화면의 로봇 자세는 파이썬 역기구학 결과를 그대로 재생한다. 불러올 때 전극 끝과 타점 좌표를 다시 대조한다 (상태 막대 FK 오차).</li>
+      <li>AI 판정: 시뮬레이터로 만든 설계 2,000개로 학습, 학습에 없던 400개로 시험 — 못 쏘는 타점 재현율 96.3 %, 설계 판정 정확도 98.3 %. 경계 근처는 시뮬레이터로 확정한다. 브라우저 계산은 파이썬과 31개 설계로 대조한다 (상태 막대 AI 파리티).</li>
+      <li>보지 않는 것: 로봇끼리의 간섭, 지그·클램프, 경로 중간 간섭. 사이클타임은 관절 속도 기반 근사.</li>
+      <li>도달 범위 표시는 링크 길이 합으로 그린 근사다 (플랜지까지, 건 제외).</li>
+    </ul>
+  </div>
+</dialog>
+
+<dialog class="dlg" id="keysDlg">
+  <div class="dlg-h">단축키<button class="dlg-x" data-close aria-label="닫기">×</button></div>
+  <div class="dlg-b">
+    <table class="kv">
+      <tr><td><kbd>Space</kbd></td><td>재생 / 정지</td></tr>
+      <tr><td><kbd>Home</kbd></td><td>처음으로</td></tr>
+      <tr><td><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd></td><td>정면 · 측면 · 위 · 등각</td></tr>
+      <tr><td><kbd>F</kbd></td><td>전체 맞춤</td></tr>
+      <tr><td><kbd>Esc</kbd></td><td>선택 해제</td></tr>
+      <tr><td>왼쪽 끌기 / 오른쪽 끌기 / 휠</td><td>회전 / 이동 / 확대</td></tr>
+    </table>
+  </div>
+</dialog>
 
 <script type="module" src="app.js"></script>
 </body>
