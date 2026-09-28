@@ -33,7 +33,7 @@
 | AI 설계 검토 | 혼류 라인 |
 |---|---|
 | ![AI 설계 검토](docs/media/demo_ai.gif) | ![혼류 라인](docs/media/demo_line.gif) |
-| 첫 타점 거리 · 실–B필러 간격 슬라이더 → 못 쏘는 타점 2 → 1 → 0 | A 그대로 투입 (정지) vs B 재밸런싱 (정지 0) |
+| 첫 타점 거리 0 → 120 mm, 실–B필러 간격 30 → 60 mm → 못 쏘는 타점 3 → 2 → 1 → 0 | A 그대로 투입 (정지) vs B 재밸런싱 (정지 0) |
 
 - 고화질 영상: [`docs/media/demo_weld.mp4`](docs/media/demo_weld.mp4) · 실행: `open_viewer.cmd`
 
