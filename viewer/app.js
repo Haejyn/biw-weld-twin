@@ -17,25 +17,36 @@ const JOINTS = [
 const FLANGE = [0.0375, 0, -0.00023924];
 const HOME = [0, 0, -Math.PI / 2, 0, 0, 0];
 const MESHES = ["base_link", "link_1", "link_2", "link_3", "link_4", "link_5", "link_6"];
-const ROBOT_HUES = [0x4da3ff, 0xa98bff];
-const ROBOT_CSS = ["var(--r0)", "var(--r1)"];
+// 로봇 id 마다 고정 색 (R1..R5)
+const ROBOT_HUES = [0x4da3ff, 0xa98bff, 0xf07ccf, 0x9bd35a, 0xe0c95a];
+const ROBOT_CSS = ROBOT_HUES.map((_, i) => `var(--r${i})`);
+const ROBOT_RGB = ROBOT_HUES.map((h) => [(h >> 16) & 255, (h >> 8) & 255, h & 255]);
+const AI_ENABLED = true;    // false 면 AI 설계 검토를 '모델 갱신 중' 으로 잠근다
 const ACCENT = 0x5ee1d4;
 const BAD = 0xff5a4e;
 
 const GROUP_KO = { sill: "실", b_pillar: "B필러", member: "크로스멤버" };
 const GROUP_PREFIX = { sill: "S", b_pillar: "B", member: "M" };
-const BOX_KO = { sill: "실", b_pillar: "B필러", member_wall: "크로스멤버 벽", floor: "바닥" };
-const REASON_KO = { unreachable: "도달 불가", gun_collision: "건 간섭", arm_collision: "팔 간섭", joint_limit: "관절 한계" };
-const DESIGN_LABEL = { A: "A 기준", B: "B 플랜지 확대", C: "C 첫 타점 이동" };
+const PART_KO = { sill: "실", b_pillar: "B필러", member: "크로스멤버", floor: "플로어" };
+const PART_COLOR = { sill: 0x9fb3cc, b_pillar: 0xc9b996, member: 0x9fc9a4, floor: 0x8a909b };
+const BOX_KO = {
+  sill_outer: "실 바깥판", sill_inner: "실 안쪽판", sill_top: "실 윗면", sill_bottom: "실 아랫면", sill_flange: "실 플랜지",
+  pillar_outer: "필러 바깥판", pillar_front: "필러 앞판", pillar_rear: "필러 뒤판", pillar_flange: "필러 플랜지",
+  member_wall_front: "멤버 앞벽", member_wall_rear: "멤버 뒤벽", member_top: "멤버 윗면",
+  member_flange_front: "멤버 앞 플랜지", member_flange_rear: "멤버 뒤 플랜지", floor: "플로어 판",
+};
+const REASON_KO = { unreachable: "도달 불가", gun_collision: "건 간섭", arm_collision: "팔 간섭", joint_limit: "관절 한계", approach_collision: "접근 경로 간섭" };
+const DESIGN_LABEL = { A: "A 기준", B: "B 플랜지 확대", C: "C 개선" };
 const designLabel = (name) => DESIGN_LABEL[name[0]] ?? name.replace(/_/, " ");
 const PARAM_KO = {
   flange_width: "플랜지 폭", member_wall_height: "크로스멤버 벽 높이", member_first_spot: "첫 타점 거리",
   member_y0: "크로스멤버 시작 위치", member_x: "크로스멤버 위치", pillar_x: "B필러 위치", pillar_w: "B필러 폭",
-  sill_top: "실 높이", floor_z: "바닥 높이",
+  sill_top: "실 높이", floor_z: "바닥 높이", sill_pillar_gap: "실–B필러 간격",
 };
 const PARAMS = Object.keys(PARAM_KO);
-const AI_NOTE = "AI 1차 판정 · 경계 근처는 시뮬레이터로 확정 (시험 400개 설계: 못 쏘는 타점 재현율 96.3%, 설계 판정 정확도 98.3%)";
-const BORDER = 0.15;   // 기준 확률보다 이만큼 위까지는 '경계 근처'
+const AI_NOTE = "AI 1차 판정 · 경계 근처는 시뮬레이터로 확정 (시험 200개 설계: 못 쏘는 타점 재현율 99.9%, 정밀도 100%, 설계 판정 99.5%)";
+const BORDER = 0.15;   // 기준 확률보다 이만큼 위까지는 '경계 근처' (기준~1 사이의 절반을 넘지 않게)
+const borderBand = (thr) => Math.min(BORDER, (1 - thr) / 2);
 // 도달 범위(근사, 플랜지까지 — 건 제외): 어깨 오프셋 + 상완 + 전완·손목 + 플랜지
 const REACH = 0.35277 + 1.2499 + Math.hypot(0.95795 + 0.542, 0.055) + 0.1925 + 0.0375;
 
@@ -263,10 +274,13 @@ function daeVisual(collada, name) {
   };
 }
 
-function buildRobot(base, yaw, gunLength, ghost) {
+function mountRobot(obj, r) {
+  obj.position.set(...r.base);
+  obj.rotation.set(r.roll ?? 0, 0, r.yaw ?? 0, "ZXY");
+}
+function buildRobot(r, gunLength, ghost) {
   const root = new THREE.Group();
-  root.position.set(...base);
-  root.rotation.z = yaw;
+  mountRobot(root, r);
   const mat = (i) => (ghost ? ghostMat : i === 0 ? baseMat : armMat);
   root.add(visuals.base_link(mat(0)));
   let parent = root;
@@ -324,18 +338,26 @@ function disposeView() {
   view = null;
 }
 
+const partMats = {};
+function partMat(part) {
+  partMats[part] ??= new THREE.MeshStandardMaterial({
+    color: PART_COLOR[part] ?? 0xc9d2e0, transparent: true, opacity: 0.3, roughness: 0.55, metalness: 0.2,
+    depthWrite: false, side: THREE.DoubleSide,
+  });
+  return partMats[part];
+}
 function addBoxes(group, boxes) {
   const out = {};
   for (const b of boxes) {
-    const size = b.hi.map((h, i) => Math.max(h - b.lo[i], 0.003));
+    const size = b.hi.map((h, i) => Math.max(h - b.lo[i], 0.0012));
     const geo = new THREE.BoxGeometry(...size);
-    const m = new THREE.Mesh(geo, panelMat);
+    const m = new THREE.Mesh(geo, b.part ? partMat(b.part) : panelMat);
     m.position.set(...b.lo.map((l, i) => l + size[i] / 2));
     m.renderOrder = 2;
     const e = new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat);
     e.position.copy(m.position);
     group.add(m, e);
-    out[b.name] = { b, objs: [m, e], geo, pos: m.position.clone() };
+    out[b.name] = { b, part: b.part ?? b.name, objs: [m, e], geo, pos: m.position.clone() };
   }
   return out;
 }
@@ -371,12 +393,41 @@ function reachRing(base) {
   const pts = [];
   for (let i = 0; i <= 128; i++) {
     const a = (i / 128) * Math.PI * 2;
-    pts.push(new THREE.Vector3(base[0] + REACH * Math.cos(a), base[1] + REACH * Math.sin(a), 0.004));
+    pts.push(new THREE.Vector3(base[0] + REACH * Math.cos(a), base[1] + REACH * Math.sin(a), base[2] > 0.5 ? base[2] - 0.004 : 0.004));
   }
   const geo = new THREE.BufferGeometry().setFromPoints(pts);
   const line = new THREE.Line(geo, new THREE.LineDashedMaterial({ color: ACCENT, dashSize: 0.08, gapSize: 0.06, transparent: true, opacity: 0.55 }));
   line.computeLineDistances();
   return line;
+}
+
+// 천장 역장착 로봇용 갠트리: 로봇 위 가로 보 + 양 끝 기둥 (시각용 단순 형상)
+const gantryMat = new THREE.MeshStandardMaterial({ color: 0x5d636d, roughness: 0.7, metalness: 0.3, transparent: true, opacity: 0.55, depthWrite: false });
+function addGantry(group, overhead) {
+  if (!overhead.length) return null;
+  const g = new THREE.Group();
+  const byY = {};
+  overhead.forEach((r) => { (byY[r.base[1]] ??= []).push(r); });
+  for (const [y, rs] of Object.entries(byY)) {
+    const z = rs[0].base[2];
+    const xs = rs.map((r) => r.base[0]);
+    const x0 = Math.min(...xs) - 0.9, x1 = Math.max(...xs) + 0.9;
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(x1 - x0, 0.26, 0.22), gantryMat);
+    beam.position.set((x0 + x1) / 2, +y, z + 0.14);
+    g.add(beam);
+    for (const x of [x0 + 0.1, x1 - 0.1]) {
+      const post = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, z + 0.25), gantryMat);
+      post.position.set(x, +y, (z + 0.25) / 2);
+      g.add(post);
+    }
+    for (const r of rs) {
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.04), gantryMat);
+      plate.position.set(r.base[0], r.base[1], z + 0.02);
+      g.add(plate);
+    }
+  }
+  group.add(g);
+  return g;
 }
 
 function buildTwin(d) {
@@ -388,25 +439,26 @@ function buildTwin(d) {
 
   const robots = {};
   const hueOf = {};
-  d.paths.forEach((p, i) => { hueOf[p.robot] = i % ROBOT_HUES.length; });
+  d.robots.forEach((r) => { hueOf[r.id] = r.id % ROBOT_HUES.length; });
+  const gantry = addGantry(group, d.robots.filter((r) => r.overhead));
   for (const r of d.robots) {
+    const info = { id: r.id, base: r.base, yaw: r.yaw, roll: r.roll ?? 0, overhead: !!r.overhead, used: r.used, hue: hueOf[r.id], path: d.paths.find((p) => p.robot === r.id) };
     if (r.used) {
-      const rig = buildRobot(r.base, r.yaw, data.gun_length, false);
+      const rig = buildRobot(r, data.gun_length, false);
       group.add(rig.root);
-      robots[r.id] = { id: r.id, base: r.base, used: true, rig, objs: [rig.root], hue: hueOf[r.id] };
+      robots[r.id] = { ...info, rig, objs: [rig.root] };
       reach.add(reachRing(r.base));
     } else {
       const g = new THREE.Group();
       g.add(visuals.base_link(ghostMat));
-      g.position.set(...r.base);
-      g.rotation.z = r.yaw;
+      mountRobot(g, r);
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(0.42, 0.5, 48),
-        new THREE.MeshBasicMaterial({ color: 0xa9b3c4, transparent: true, opacity: 0.14, depthWrite: false }),
+        new THREE.MeshBasicMaterial({ color: 0xa9b3c4, transparent: true, opacity: 0.14, depthWrite: false, side: THREE.DoubleSide }),
       );
-      ring.position.set(r.base[0], r.base[1], 0.002);
+      ring.position.set(r.base[0], r.base[1], r.overhead ? r.base[2] - 0.002 : 0.002);
       group.add(g, ring);
-      robots[r.id] = { id: r.id, base: r.base, used: false, objs: [g, ring], ghost: g };
+      robots[r.id] = { ...info, objs: [g, ring], ghost: g };
     }
   }
 
@@ -450,7 +502,7 @@ function buildTwin(d) {
 
   scene.add(group);
   const duration = Math.max(...d.paths.map((p) => p.frames[p.frames.length - 1].t)) + 1.5;
-  view = { kind: "twin", group, boxes, robots, spots, hits, welds, sparks, reach, duration, hueOf };
+  view = { kind: "twin", group, boxes, robots, spots, hits, welds, sparks, reach, duration, hueOf, gantry };
   if (!fkAll[d.name]) verifyFK(d);
 }
 
@@ -541,7 +593,7 @@ function setSpeed(s) {
    ===================================================================== */
 function applyVisibility() {
   if (!view) return;
-  for (const [name, b] of Object.entries(view.boxes)) b.objs.forEach((o) => { o.visible = vis.body && isVisible(`box:${name}`); });
+  for (const [name, b] of Object.entries(view.boxes)) b.objs.forEach((o) => { o.visible = vis.body && isVisible(`part:${b.part}`) && isVisible(`box:${name}`); });
   for (const e of Object.values(view.spots)) {
     const on = vis.spots && isVisible(`grp:${e.group}`);
     e.objs.forEach((o) => { o.visible = on; });
@@ -549,6 +601,7 @@ function applyVisibility() {
   }
   for (const r of Object.values(view.robots)) r.objs.forEach((o) => { o.visible = vis.robots && isVisible(`robot:${r.id}`); });
   if (view.reach) view.reach.visible = vis.reach && vis.robots;
+  if (view.gantry) view.gantry.visible = vis.robots;
   document.querySelectorAll("[data-act^='toggle:']").forEach((b) => {
     const k = b.dataset.act.split(":")[1];
     b.classList.toggle("on", !!vis[k]);
@@ -577,7 +630,15 @@ function renderTree() {
   const kids = (key, html) => `<div class="children${openNodes.has(key) ? "" : " closed"}">${html}</div>`;
   let h = "";
   h += row("body", 0, icon("folder"), "차체", "", { kids: true, eye: "body" });
-  h += kids("body", Object.keys(view.boxes).map((n) => row(`box:${n}`, 1, icon("box"), BOX_KO[n] ?? n, "", { eye: `box:${n}` })).join(""));
+  const parts = [...new Set(Object.values(view.boxes).map((b) => b.part))];
+  const partHtml = parts.map((pt) => {
+    const plates = Object.entries(view.boxes).filter(([, b]) => b.part === pt);
+    if (plates.length === 1 && plates[0][0] === pt) return row(`box:${pt}`, 1, icon("box"), PART_KO[pt] ?? BOX_KO[pt] ?? pt, "", { eye: `box:${pt}` });
+    return row(`part:${pt}`, 1, `<i class="dot-i" style="background:#${(PART_COLOR[pt] ?? 0xc9d2e0).toString(16).padStart(6, "0")}"></i>`,
+      PART_KO[pt] ?? pt, `<span class="badge">${plates.length}</span>`, { kids: true, eye: `part:${pt}` })
+      + kids(`part:${pt}`, plates.map(([n]) => row(`box:${n}`, 2, icon("box"), BOX_KO[n] ?? n, "", { eye: `box:${n}` })).join(""));
+  }).join("");
+  h += kids("body", partHtml);
   const nSpots = Object.keys(view.spots).length;
   h += row("spots", 0, icon("folder"), "타점", `<span class="badge">${nSpots}</span>`, { kids: true, eye: "spots" });
   let sh = "";
@@ -593,7 +654,7 @@ function renderTree() {
   h += kids("spots", sh);
   h += row("robots", 0, icon("folder"), "로봇", "", { kids: true, eye: "robots" });
   h += kids("robots", Object.values(view.robots).map((r) => row(`robot:${r.id}`, 1, icon("robot"), `R${r.id + 1}`,
-    `<span class="tag">${view.kind === "ai" ? "후보" : r.used ? "사용" : "빈 자리"}</span>`, { eye: `robot:${r.id}` })).join(""));
+    `${view.kind === "twin" && r.used ? `<i class="dot-i" style="background:${ROBOT_CSS[r.hue]}"></i>` : ""}<span class="tag">${r.overhead ? "천장" : "바닥"} · ${view.kind === "ai" ? "후보" : r.used ? "사용" : "빈 자리"}</span>`, { eye: `robot:${r.id}` })).join(""));
   $("tree").innerHTML = h;
 }
 
@@ -614,7 +675,8 @@ $("tree").addEventListener("click", (ev) => {
     renderTree();
     return;
   }
-  if (key.startsWith("grp:") || ["body", "spots", "robots"].includes(key)) openNodes.add(key);
+  if (key.startsWith("grp:") || key.startsWith("part:") || ["body", "spots", "robots"].includes(key)) openNodes.add(key);
+  if (key.startsWith("box:")) { openNodes.add("body"); openNodes.add(`part:${view.boxes[key.slice(4)]?.part}`); }
   if (key.startsWith("spot:")) { openNodes.add("spots"); openNodes.add(`grp:${view.spots[key.slice(5)]?.group}`); }
   select(key);
 });
@@ -626,8 +688,8 @@ function renderDocs() {
       <span class="nm">${designLabel(d.name)}</span><span class="badge${bad ? " bad" : ""}">${bad ? `${bad} 못 쏨` : "0"}</span></button>`;
   });
   const n = data.designs.length;
-  items.push(`<button class="doc${docIndex === n ? " on" : ""}" data-doc="${n}"><span class="ico">${icon("ai")}</span>
-    <span class="nm">AI 설계 검토</span><span class="badge ai">AI</span></button>`);
+  items.push(`<button class="doc${docIndex === n ? " on" : ""}" data-doc="${n}"${AI_ENABLED ? "" : " disabled"}><span class="ico">${icon("ai")}</span>
+    <span class="nm">AI 설계 검토</span><span class="badge ai">${AI_ENABLED ? "AI" : "모델 갱신 중"}</span></button>`);
   $("docList").innerHTML = items.join("");
 }
 $("docList").addEventListener("click", (ev) => {
@@ -657,6 +719,7 @@ function selName(key) {
   if (kind === "spot") return `${id} (${GROUP_KO[view.spots[id]?.group] ?? ""} 타점)`;
   if (kind === "grp") return `${GROUP_KO[id]} 타점 그룹`;
   if (kind === "box") return BOX_KO[id] ?? id;
+  if (kind === "part") return `${PART_KO[id] ?? id} 판재`;
   if (kind === "robot") return `R${+id + 1}`;
   return { body: "차체", spots: "타점 전체", robots: "로봇 전체" }[kind] ?? key;
 }
@@ -683,6 +746,7 @@ function updateSelectionMarkers() {
   };
   if (kind === "box" && view.boxes[id]) edgeOf(view.boxes[id]);
   if (kind === "body") Object.values(view.boxes).forEach(edgeOf);
+  if (kind === "part") Object.values(view.boxes).filter((b) => b.part === id).forEach(edgeOf);
   if (kind === "robot" && view.robots[id]) {
     selBoxHelper = new THREE.BoxHelper(view.robots[id].objs[0], ACCENT);
     selBoxHelper.material.depthTest = false;
@@ -696,18 +760,6 @@ const meter = (label, value, max, cls, text, mark) => `<div class="meter">
   <div class="row"><span>${label}</span><span>${text}</span></div>
   <div class="bar"><i class="${cls}" style="width:${clamp((value / max) * 100, 0, 100)}%"></i>${mark != null ? `<span class="mark" style="left:${clamp(mark * 100, 0, 100)}%"></span>` : ""}</div></div>`;
 
-function deriveParams(d) {
-  const box = (n) => d.boxes.find((b) => b.name === n);
-  const wall = box("member_wall"), pil = box("b_pillar"), sill = box("sill");
-  const m0 = d.spots.find((s) => s.id === "M00");
-  const member_x = m0.pos[0], y0 = wall.lo[1];
-  return {
-    flange_width: wall.lo[0] - member_x, member_wall_height: wall.hi[2] - wall.lo[2], member_first_spot: m0.pos[1] - y0,
-    member_y0: y0, member_x, pillar_x: (pil.lo[0] + pil.hi[0]) / 2, pillar_w: pil.hi[0] - pil.lo[0],
-    sill_top: sill.hi[2], floor_z: sill.lo[2],
-  };
-}
-
 function robotPath(id) { return design?.paths.find((p) => p.robot === id); }
 
 function renderInspector() {
@@ -717,6 +769,7 @@ function renderInspector() {
   if (kind === "spot" && view.spots[id]) { el.innerHTML = inspectSpot(view.spots[id]); return; }
   if (kind === "grp") { el.innerHTML = inspectGroup(id); return; }
   if (kind === "box" && view.boxes[id]) { el.innerHTML = inspectBox(view.boxes[id].b); return; }
+  if (kind === "part") { el.innerHTML = inspectPart(id); return; }
   if (kind === "robot" && view.robots[id]) { el.innerHTML = inspectRobot(view.robots[id]); return; }
   el.innerHTML = inspectDesign();
 }
@@ -737,7 +790,7 @@ function inspectSpot(e) {
     return h;
   }
   h += kvRow("AI 판정", e.bad ? "못 쏨" : e.border ? "경계 근처" : "쏠 수 있음", e.bad ? "v bad" : "v");
-  h += kvRow("가장 높은 확률", `${e.best.toFixed(3)} (기준 ${ai.meta.threshold})`);
+  h += kvRow("가장 높은 확률", `${e.best.toFixed(3)} (기준 ${+ai.meta.threshold.toFixed(3)})`);
   h += "</table><div class=\"sub-h\">후보 로봇별 쏠 확률</div>";
   e.probs.forEach((p, r) => {
     h += meter(`R${r + 1}`, p, 1, p >= ai.meta.threshold ? "acc" : "warn", p.toFixed(3), ai.meta.threshold);
@@ -763,17 +816,37 @@ function inspectGroup(g) {
 
 function inspectBox(b) {
   const size = b.hi.map((h, i) => h - b.lo[i]);
-  return `<div class="insp-title"><b>${BOX_KO[b.name] ?? b.name}</b><span class="kind">차체 판넬 (상자)</span></div><table class="kv">
+  return `<div class="insp-title"><b>${BOX_KO[b.name] ?? b.name}</b><span class="kind">${PART_KO[b.part] ?? ""} 판재</span></div><table class="kv">
+    ${kvRow("부품", PART_KO[b.part] ?? b.part ?? "—")}${kvRow("두께 (mm)", mm(Math.min(...size), 1))}
     ${kvRow("최소 (mm)", vecMm(b.lo))}${kvRow("최대 (mm)", vecMm(b.hi))}${kvRow("크기 (mm)", vecMm(size))}</table>`;
+}
+function inspectPart(pt) {
+  const plates = Object.values(view.boxes).filter((b) => b.part === pt);
+  const nSpots = Object.values(view.spots).filter((e) => e.group === pt).length;
+  const sizeOf = (b) => b.b.hi.map((x, i) => x - b.b.lo[i]);
+  let h = `<div class="insp-title"><b>${PART_KO[pt] ?? pt}</b><span class="kind">판재 묶음</span></div><table class="kv">`;
+  h += kvRow("판재", `${plates.length}장`);
+  h += kvRow("두께 (mm)", mm(Math.min(...plates.map((b) => Math.min(...sizeOf(b)))), 1));
+  if (nSpots) h += kvRow("타점", `${nSpots}개`);
+  h += '</table><div class="sub-h">판재 크기 (mm)</div><table class="kv">';
+  plates.forEach((b) => { h += kvRow(BOX_KO[b.b.name] ?? b.b.name, vecMm(sizeOf(b), 1)); });
+  return h + "</table>";
 }
 
 function inspectRobot(r) {
+  const deg = (x) => `${Math.round(THREE.MathUtils.radToDeg(x ?? 0))}°`;
   let h = `<div class="insp-title"><b>R${r.id + 1}</b><span class="kind">KUKA KR210 L150</span></div><table class="kv">`;
+  h += kvRow("설치", r.overhead ? "천장 역장착" : "바닥");
   h += kvRow("베이스 (mm)", vecMm(r.base, 0));
-  h += kvRow("회전 (z)", "90°");
+  h += kvRow("회전 yaw · roll", `${deg(r.yaw ?? Math.PI / 2)} · ${deg(r.roll)}`);
   h += kvRow("상태", view.kind === "ai" ? "후보 위치" : r.used ? "사용" : "빈 자리");
   const p = view.kind === "twin" ? robotPath(r.id) : null;
-  if (p) h += kvRow("담당 타점", `${p.frames.filter((f) => f.weld_end).length}개`);
+  if (p) {
+    h += kvRow("담당 타점", `${p.frames.filter((f) => f.weld_end).length}개`);
+    h += kvRow("사이클", `${p.cycle_s.toFixed(2)} s`);
+    h += kvRow("인터록 대기", `${(p.interlock_wait_s ?? 0).toFixed(2)} s`, (p.interlock_wait_s ?? 0) > 0 ? "v warn" : "v");
+    h += kvRow("경유 횟수", `${p.via_moves ?? 0}회`);
+  }
   h += kvRow("도달 범위 (플랜지, 근사)", `${mm(REACH, 0)} mm`);
   h += "</table>";
   if (p) h += `<div class="sub-h">사이클타임</div>` + meter(`예산 ${design.budget_s.toFixed(0)} s`, p.cycle_s, design.budget_s,
@@ -788,11 +861,21 @@ function inspectRobot(r) {
 
 function inspectDesign() {
   const isAI = view.kind === "ai";
-  const v = isAI ? ai.v : deriveParams(design);
   let h = `<div class="insp-title"><b>${isAI ? "AI 설계 검토" : designLabel(design.name)}</b><span class="kind">설계안</span></div>`;
-  if (!isAI) h += `<div class="note" style="margin-top:0">${esc(design.notes)}</div>`;
-  h += `<div class="sub-h">설계 변수</div><table class="kv">`;
-  PARAMS.forEach((k) => { h += kvRow(PARAM_KO[k], `${mm(v[k])} mm`); });
+  if (isAI) {   // 설계 변수는 위 칸에 있으니 요약만
+    const nR = ai.meta.bases.length, nOver = ai.meta.bases.filter((b) => b[4] !== 0).length;
+    return h + `<table class="kv">${kvRow("타점", `${ai.res?.spots.length ?? "—"}개`)}${kvRow("후보 로봇", `${nR}곳 (바닥 ${nR - nOver} · 천장 ${nOver})`)}
+      ${kvRow("판정", "타점마다 후보 로봇 중 가장 높은 확률이 기준 미만이면 못 쏨")}</table>`;
+  }
+  h += `<div class="note" style="margin-top:0">${esc(design.notes)}</div><table class="kv">`;
+  const parts = {};
+  design.boxes.forEach((b) => { parts[b.part] = (parts[b.part] ?? 0) + 1; });
+  h += kvRow("판재", `${design.boxes.length}장 (${Object.entries(parts).map(([k, n]) => `${PART_KO[k] ?? k} ${n}`).join(" · ")})`);
+  h += kvRow("타점", `${design.spots.length}개`);
+  h += kvRow("로봇", design.robots.filter((r) => r.used).map((r) => `R${r.id + 1}${r.overhead ? "(천장)" : ""}`).join(" · "));
+  h += kvRow("사이클 예산", `${design.budget_s.toFixed(0)} s`);
+  h += kvRow("인터록 대기 합", `${design.paths.reduce((a, p) => a + (p.interlock_wait_s ?? 0), 0).toFixed(2)} s`);
+  h += kvRow("경유 이동 합", `${design.paths.reduce((a, p) => a + (p.via_moves ?? 0), 0)}회`);
   return h + "</table>";
 }
 
@@ -810,7 +893,7 @@ function renderResults() {
       </div><table class="kv">
       ${kvRow("못 쏨", ids.join(", ") || "없음", ids.length ? "v bad" : "v")}
       ${kvRow("경계 근처", border.join(", ") || "없음")}
-      ${kvRow("기준 확률", ai.meta.threshold)}</table>
+      ${kvRow("기준 확률", +ai.meta.threshold.toFixed(3))}</table>
       <div class="note">${AI_NOTE}</div>`;
     return;
   }
@@ -823,7 +906,7 @@ function renderResults() {
     <div class="stat"><div class="v">${d.paths.length}</div><div class="k">로봇 대수</div></div></div>
     <div class="sub-h">로봇별 사이클타임 · 예산 ${d.budget_s.toFixed(0)} s</div>`;
   d.paths.forEach((p, i) => {
-    h += meter(`R${p.robot + 1} · ${p.frames.filter((f) => f.weld_end).length}점`, p.cycle_s, d.budget_s, `r${i % 2}`,
+    h += meter(`R${p.robot + 1}${d.robots[p.robot]?.overhead ? " 천장" : ""} · ${p.frames.filter((f) => f.weld_end).length}점${p.interlock_wait_s ? ` · 대기 ${p.interlock_wait_s.toFixed(1)} s` : ""}`, p.cycle_s, d.budget_s, `r${p.robot}`,
       `${p.cycle_s.toFixed(2)} / ${d.budget_s.toFixed(0)} s`);
   });
   el.innerHTML = h;
@@ -903,7 +986,8 @@ const VIEW_DIRS = {
   front: { dir: [-1, 0, 0.0001], name: "정면" },
   side: { dir: [0, 1, 0.0001], name: "측면" },
   top: { dir: [0, -0.0001, 1], name: "위" },
-  iso: { dir: [-4.1, 4.85, 3.5], name: "등각" },
+  iso: { dir: [5.27, -1.9, 4.6], name: "등각" },   // 라인 끝에서: 바닥 로봇 왼쪽 · 차체 가운데 · 천장 로봇 오른쪽
+  ai: { dir: [3.6, -2.4, 6.4], name: "위 등각" },   // AI 모드: 홈 자세 로봇 5대 사이로 차체를 내려다본다
 };
 let viewName = "iso";
 const FIT = 0.74;   // 경계 구는 상자보다 넉넉해서 줄여 맞춘다
@@ -934,7 +1018,7 @@ function setView(name, focusBody = view?.kind === "ai") {
   const fov = THREE.MathUtils.degToRad(camera.fov);
   const fitH = radius / Math.sin(fov / 2);
   const fitW = radius / Math.sin(Math.atan(Math.tan(fov / 2) * camera.aspect));
-  const dist = Math.max(fitH, fitW) * FIT * (focusBody ? 1.25 : 1);
+  const dist = Math.max(fitH, fitW) * FIT * (focusBody ? 1.9 : 1);
   controls.target.copy(center);
   camera.position.copy(center).addScaledVector(dir, dist);
   controls.update();
@@ -964,7 +1048,7 @@ function setTool(name) {
    ===================================================================== */
 function openDoc(i) {
   const n = data.designs.length;
-  if (i === n) { enterAI(); return; }
+  if (i === n) { if (AI_ENABLED) enterAI(); return; }
   const wasAI = mode === "ai";
   mode = "twin";
   docIndex = i;
@@ -994,7 +1078,7 @@ function keepSelection() {
   if (!sel) return;
   const [kind, id] = sel.split(":");
   const ok = (kind === "spot" && view.spots[id]) || (kind === "box" && view.boxes[id]) || (kind === "robot" && view.robots[id])
-    || kind === "grp" || ["body", "spots", "robots"].includes(kind);
+    || kind === "grp" || kind === "part" || ["body", "spots", "robots"].includes(kind);
   if (!ok) sel = null;
   updateSelectionMarkers();
   $("stSel").textContent = sel ? `선택 ${selName(sel)}` : "선택 없음";
@@ -1022,6 +1106,7 @@ function loadAI() {
 }
 
 async function enterAI() {
+  if (!AI_ENABLED) return;
   await loadAI();
   const wasAI = mode === "ai";
   mode = "ai";
@@ -1038,7 +1123,7 @@ async function enterAI() {
   runAI(true);
   renderDocs();
   if (!wasAI) {
-    setView("iso", true);
+    setView("ai", true);
     log("info", "AI 설계 검토 모드 — 설계 변수를 바꾸면 브라우저 안에서 LightGBM 이 바로 판정");
   }
   $("docTitle").innerHTML = `<b>AI 설계 검토</b> · 후보 로봇 ${ai.meta.bases.length}곳`;
@@ -1106,14 +1191,16 @@ function buildAIScene(res) {
   if (!ai.robots || ai.robotsKind !== meshKind) {
     ai.robots = new THREE.Group();
     ai.robotsKind = meshKind;
-    ai.rigs = ai.meta.bases.map((base) => {
-      const rig = buildRobot(base, Math.PI / 2, data.gun_length, false);
+    ai.robotInfo = ai.meta.bases.map((b, i) => ({ id: i, base: b.slice(0, 3), yaw: b[3], roll: b[4], overhead: b[4] !== 0 }));
+    addGantry(ai.robots, ai.robotInfo.filter((r) => r.overhead));
+    ai.rigs = ai.robotInfo.map((r) => {
+      const rig = buildRobot(r, data.gun_length, false);
       setPose(rig, HOME);
       ai.robots.add(rig.root);
       return rig;
     });
     ai.reach = new THREE.Group();
-    ai.meta.bases.forEach((b) => ai.reach.add(reachRing(b)));
+    ai.robotInfo.forEach((r) => ai.reach.add(reachRing(r.base)));
     ai.robots.add(ai.reach);
   }
   group.add(ai.robots);
@@ -1125,7 +1212,7 @@ function buildAIScene(res) {
   res.spots.forEach((s, i) => {
     const pos = new THREE.Vector3(...s.pos);
     const probs = Array.from(res.pairProb.subarray(i * nR, i * nR + nR));
-    const border = !res.bad[i] && res.best[i] < ai.meta.threshold + BORDER;
+    const border = !res.bad[i] && res.best[i] < ai.meta.threshold + borderBand(ai.meta.threshold);
     const e = { s, pos, group: s.group, bad: res.bad[i], border, best: res.best[i], probs, objs: [] };
     if (e.bad) e.objs = addBadMarker(group, pos);
     else {
@@ -1139,7 +1226,7 @@ function buildAIScene(res) {
     spots[s.id] = e;
   });
   const robots = {};
-  ai.rigs.forEach((rig, i) => { robots[i] = { id: i, base: ai.meta.bases[i], used: true, rig, objs: [rig.root] }; });
+  ai.rigs.forEach((rig, i) => { robots[i] = { ...ai.robotInfo[i], used: true, hue: i, rig, objs: [rig.root] }; });
   scene.add(group);
   view = { kind: "ai", group, keep: ai.robots, boxes, robots, spots, hits, welds: [], sparks: [], reach: ai.reach, duration: 0 };
 }
@@ -1149,7 +1236,8 @@ function buildAIScene(res) {
    ===================================================================== */
 const scrub = $("scrub");
 function renderTimelineLegend() {
-  $("tlLegend").innerHTML = design.paths.map((p, i) => `<i class="sw r${i % 2}"></i>R${p.robot + 1}`).join(" ")
+  $("tlLegend").innerHTML = design.paths.map((p) => `<i class="sw r${p.robot}"></i>R${p.robot + 1}`).join(" ")
+    + (design.paths.some((p) => p.interlock_wait_s > 0) ? ' <i class="sw wait"></i>인터록 대기' : "")
     + ` <i class="sw" style="background:var(--muted);width:2px"></i>예산 ${design.budget_s.toFixed(0)} s`;
 }
 const TL = { padL: 64, padR: 14 };
@@ -1183,7 +1271,16 @@ function drawScrub() {
     g.fillText(`R${p.robot + 1}`, 10, y + rowH / 2 + 3);
     g.fillStyle = "#2c2d31";
     g.fillRect(TL.padL, y + rowH * 0.3, x(p.cycle_s) - TL.padL, rowH * 0.4);
-    const hue = i % 2 === 0 ? [77, 163, 255] : [169, 139, 255];
+    const hue = ROBOT_RGB[p.robot % ROBOT_RGB.length];
+    if (p.interlock_wait_s > 0) {   // 처음 인터록 대기 구간: 빗금
+      const x0 = x(0), x1 = x(p.interlock_wait_s), y0 = y + rowH * 0.18, hh = rowH * 0.64;
+      g.save();
+      g.beginPath(); g.rect(x0, y0, x1 - x0, hh); g.clip();
+      g.fillStyle = "rgba(139,143,151,.18)"; g.fillRect(x0, y0, x1 - x0, hh);
+      g.strokeStyle = "rgba(139,143,151,.7)"; g.lineWidth = 1;
+      for (let k = -hh; k < x1 - x0; k += 5) { g.beginPath(); g.moveTo(x0 + k, y0 + hh); g.lineTo(x0 + k + hh, y0); g.stroke(); }
+      g.restore();
+    }
     for (const w of view.welds) {
       if (w.robot !== p.robot) continue;
       const done = t >= w.t1;
@@ -1612,7 +1709,12 @@ async function boot() {
   MESHES.forEach((m, i) => { meshes[i].computeVertexNormals(); visualSets.stl[m] = stlVisual(meshes[i], m); });
   visuals = visualSets.stl;
   log("info", `데이터: 설계안 ${data.designs.length}개, 로봇 ${data.robot_model}, 건 길이 ${mm(data.gun_length, 0)} mm`);
-  loadAI().catch((err) => { console.error("[AI] 모델을 못 읽음", err); log("err", "AI 모델을 못 읽음"); });
+  if (AI_ENABLED) loadAI().catch((err) => { console.error("[AI] 모델을 못 읽음", err); log("err", "AI 모델을 못 읽음"); });
+  else {
+    $("stAi").innerHTML = '<span>AI 파리티 보류 · 모델 갱신 중</span>';
+    document.querySelectorAll('.menu-pop [data-act^="ai"]').forEach((b) => { b.disabled = true; });
+    log("info", "AI 설계 검토: 새 모델·특징으로 갱신 중이라 잠시 꺼 둠");
+  }
 
   resize();
   // 모든 설계안 FK 검증 — 콘솔·로그·상태 막대
@@ -1662,7 +1764,7 @@ if (new URLSearchParams(location.search).has("record")) {
   $("stFps").style.display = "none";   // headless 소프트웨어 렌더링 fps 는 실제와 달라 녹화에서 뺀다
   const zAxis = new THREE.Vector3(0, 0, 1);
   window.__rec = {
-    ready: () => !!(data && view && window.__meshes && window.__aiParity),
+    ready: () => !!(data && view && window.__meshes && (!AI_ENABLED || window.__aiParity)),
     pause() { setPlaying(false); setLinePlaying(false); },
     duration: () => view?.duration ?? 0,
     setTime(x) { t = x; applyTime(t); },

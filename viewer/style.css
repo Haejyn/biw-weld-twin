@@ -351,3 +351,16 @@ input[type=range]::-moz-range-thumb { width: 11px; height: 11px; border: 0; bord
   .toolbar button.drawer-btn:last-child { right: 0; box-shadow: -6px 0 8px -4px rgba(0,0,0,.6); }
   .toolbar span.drawer-btn { display: none; }
 }
+
+/* 로봇 5대 색 · 인터록 대기 · 비활성 문서 */
+:root { --r2: #f07ccf; --r3: #9bd35a; --r4: #e0c95a; }
+.bar i.r2 { background: var(--r2); }
+.bar i.r3 { background: var(--r3); }
+.bar i.r4 { background: var(--r4); }
+.tl-legend .sw.r2 { background: var(--r2); }
+.tl-legend .sw.r3 { background: var(--r3); }
+.tl-legend .sw.r4 { background: var(--r4); }
+.tl-legend .sw.wait { background: repeating-linear-gradient(135deg, rgba(139,143,151,.8) 0 2px, transparent 2px 4px); }
+.kv td.warn { color: var(--warn); }
+.doclist .doc:disabled { opacity: .55; cursor: default; }
+.doclist .doc:disabled .badge.ai { background: var(--field); color: var(--muted); }

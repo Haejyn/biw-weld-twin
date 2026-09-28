@@ -1,6 +1,6 @@
 """설계안별 차체 STEP + 타점 목록 CSV — CATIA 등 CAD 에서 열어 볼 수 있게.
 
-results/cad/<설계안>.step  : 부품(실·B필러·크로스멤버 벽·바닥)은 이름 붙은 솔리드, 타점은 지름 6 mm 구
+results/cad/<설계안>.step  : 판재(실·B필러·크로스멤버·플로어, 두께 1.2 mm)는 이름 붙은 솔리드, 타점은 지름 6 mm 구
 results/cad/<설계안>_spots.csv : 타점 id · 부위 · 좌표(mm) · 법선 · 판정 · 담당 로봇 · 못 쏘는 이유
 다시 읽어 부품 수와 경계 상자를 확인한다.
 """
@@ -21,8 +21,8 @@ from stage1 import DESIGNS  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "results" / "cad"
 MM = 1000.0
-NAMES = {"sill": "SIDE_SILL", "b_pillar": "B_PILLAR", "member_wall": "CROSSMEMBER_WALL", "floor": "FLOOR"}  # STEP 은 ASCII 이름
-COLORS = {"sill": (0.62, 0.64, 0.68), "b_pillar": (0.55, 0.58, 0.63), "member_wall": (0.70, 0.66, 0.58),
+# STEP 은 ASCII 이름 — 판재 이름을 대문자로 (SILL_OUTER, PILLAR_FLANGE, MEMBER_TOP …)
+COLORS = {"sill": (0.62, 0.64, 0.68), "b_pillar": (0.55, 0.58, 0.63), "member": (0.70, 0.66, 0.58),
           "floor": (0.45, 0.47, 0.50)}
 
 
@@ -32,7 +32,7 @@ def build(design, twin_design):
         size = (b.hi - b.lo) * MM
         center = (b.hi + b.lo) / 2 * MM
         solid = cq.Workplane("XY").box(*size).translate(tuple(center))
-        asm.add(solid, name=NAMES[b.name], color=cq.Color(*COLORS[b.name]))
+        asm.add(solid, name=b.name.upper(), color=cq.Color(*COLORS[b.part]))
     judged = {s["id"]: s for s in twin_design["spots"]}
     for s in spots(design):
         bad = judged[s.id]["robot"] is None
@@ -63,7 +63,7 @@ def main():
         solids = back.solids().vals()
         bb = back.val().BoundingBox()
         print(f"{tag}: {path.name} {path.stat().st_size // 1024} KB, 다시 읽은 솔리드 {len(solids)}개 "
-              f"(부품 4 + 타점 {len(spots(d))}), 경계 {bb.xlen:.0f}×{bb.ylen:.0f}×{bb.zlen:.0f} mm")
+              f"(판재 {len(obstacles(d))} + 타점 {len(spots(d))}), 경계 {bb.xlen:.0f}×{bb.ylen:.0f}×{bb.zlen:.0f} mm")
 
 
 if __name__ == "__main__":

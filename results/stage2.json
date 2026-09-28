@@ -7,10 +7,27 @@
       1.15,
       0.15
     ],
-    "station_capex": 1.0,
-    "operator_per_year": 0.4,
-    "new_line_fixed": 10.0,
-    "years": 5
+    "unit": "억 원",
+    "station_capex_assumed": 10.0,
+    "labour_per_worker_year": {
+      "low": 0.852,
+      "typical": 1.34,
+      "high": 1.67625172
+    },
+    "lost_car_value": {
+      "low": 0.02771102,
+      "typical": 0.0289492,
+      "high": 0.04100314
+    },
+    "robot_cell": {
+      "low": 1.4648248,
+      "typical": 1.8914728,
+      "high": 2.5883312
+    },
+    "line_share_assumed": 0.1,
+    "new_line_fixed": 720.0,
+    "years": 5,
+    "shifts": 2
   },
   "work_content_s": {
     "old": 757.1,
@@ -25,7 +42,8 @@
       "line_stops_per_100": 29.8,
       "stop_share_pct": 4.91,
       "effective_jph": 57.06,
-      "cost5y": 55.4
+      "lost_cars_5y": 58800,
+      "cost5y": 1876.4
     },
     "A_혼류_그대로_even": {
       "stations": 13,
@@ -33,7 +51,8 @@
       "line_stops_per_100": 30.0,
       "stop_share_pct": 4.76,
       "effective_jph": 57.14,
-      "cost5y": 54.6
+      "lost_cars_5y": 57200,
+      "cost5y": 1830.1
     },
     "B_재밸런싱_증설_random": {
       "stations": 14,
@@ -42,7 +61,8 @@
       "line_stops_per_100": 18.1,
       "stop_share_pct": 1.18,
       "effective_jph": 59.29,
-      "cost5y": 36.1
+      "lost_cars_5y": 14200,
+      "cost5y": 608.7
     },
     "B_재밸런싱_증설_even": {
       "stations": 14,
@@ -51,7 +71,8 @@
       "line_stops_per_100": 0.0,
       "stop_share_pct": 0.0,
       "effective_jph": 60.0,
-      "cost5y": 29.0
+      "lost_cars_5y": 0,
+      "cost5y": 197.6
     },
     "C_신규라인": {
       "stations": 14,
@@ -61,877 +82,3067 @@
       "line_stops_per_100": 0.0,
       "stop_share_pct": 0.0,
       "effective_jph": 60,
-      "cost5y": 43.0
+      "lost_cars_5y": 0,
+      "cost5y": 957.6
     }
   },
   "sensitivity": [
     {
-      "fixed": 0.0,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 1,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 5,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 10,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 20,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.0001,
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.00017782794100389227,
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.00031622776601683794,
+      "station_capex": 50,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.0005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.001,
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.0017782794100389228,
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.0031622776601683794,
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 0.0,
-      "margin": 0.01,
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.0001,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.00017782794100389227,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.00031622776601683794,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.0005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.001,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.0017782794100389228,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.0031622776601683794,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 2.5,
-      "margin": 0.01,
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.0001,
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.00017782794100389227,
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.00031622776601683794,
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.0005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.001,
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.0017782794100389228,
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.0031622776601683794,
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 5.0,
-      "margin": 0.01,
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 100,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.0001,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.00017782794100389227,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.00031622776601683794,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.0005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.001,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.0017782794100389228,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.0031622776601683794,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.005623413251903491,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 7.5,
-      "margin": 0.01,
+      "station_capex": 100,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.0001,
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.00017782794100389227,
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.00031622776601683794,
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.0005623413251903491,
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.001,
+      "station_capex": 100,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.0017782794100389228,
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.0031622776601683794,
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.005623413251903491,
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 10.0,
-      "margin": 0.01,
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.0001,
+      "station_capex": 200,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.00017782794100389227,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.00031622776601683794,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.0005623413251903491,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.001,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.0017782794100389228,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.0031622776601683794,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.005623413251903491,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 12.5,
-      "margin": 0.01,
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.0001,
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.00017782794100389227,
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.00031622776601683794,
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.0005623413251903491,
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.001,
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.0017782794100389228,
+      "station_capex": 200,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.0031622776601683794,
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.005623413251903491,
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 15.0,
-      "margin": 0.01,
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.0001,
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.00017782794100389227,
+      "station_capex": 200,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.00031622776601683794,
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.0005623413251903491,
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.001,
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.0017782794100389228,
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.0031622776601683794,
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.005623413251903491,
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 17.5,
-      "margin": 0.01,
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.0001,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.00017782794100389227,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.00031622776601683794,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.0005623413251903491,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.001,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.0017782794100389228,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.0031622776601683794,
+      "station_capex": 200,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.005623413251903491,
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 20.0,
-      "margin": 0.01,
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.0001,
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.00017782794100389227,
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.00031622776601683794,
+      "station_capex": 500,
+      "line_share": 0.02,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.0005623413251903491,
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.001,
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.0017782794100389228,
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.0031622776601683794,
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.005623413251903491,
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 22.5,
-      "margin": 0.01,
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.05,
+      "labour": "high",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.0001,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.00017782794100389227,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.00031622776601683794,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.0005623413251903491,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.001,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.0017782794100389228,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.0031622776601683794,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.005623413251903491,
+      "station_capex": 500,
+      "line_share": 0.1,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 25.0,
-      "margin": 0.01,
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "low",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.0001,
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.00017782794100389227,
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.00031622776601683794,
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.0005623413251903491,
+      "station_capex": 500,
+      "line_share": 0.2,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.001,
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.0017782794100389228,
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.0031622776601683794,
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.005623413251903491,
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 27.5,
-      "margin": 0.01,
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 1e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "typical",
+      "lost_car": "high",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 1.778279410038923e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "low",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 3.1622776601683795e-05,
-      "best": "A_혼류_그대로_even"
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "typical",
+      "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 5.623413251903491e-05,
+      "station_capex": 500,
+      "line_share": 0.5,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.0001,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.00017782794100389227,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.00031622776601683794,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "low",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.0005623413251903491,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.001,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.0017782794100389228,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "typical",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.0031622776601683794,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "low",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.005623413251903491,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "typical",
       "best": "B_재밸런싱_증설_even"
     },
     {
-      "fixed": 30.0,
-      "margin": 0.01,
+      "station_capex": 500,
+      "line_share": 1.0,
+      "labour": "high",
+      "lost_car": "high",
       "best": "B_재밸런싱_증설_even"
     }
   ],
+  "break_even": {
+    "station_capex_A_eq_B": 1642.5,
+    "lost_cars_A_5y": 57200
+  },
   "combined": [
     {
       "body_design": "A_기준",
       "line_alt": "B_재밸런싱_증설_even",
-      "unshootable": 1,
-      "weld_robots": 2,
-      "cost5y": 32.0
+      "unshootable": 2,
+      "weld_robots": 4,
+      "robot_capex": 7.6,
+      "manual_touchup": 23.4,
+      "cost5y": 228.6
     },
     {
       "body_design": "B_플랜지확대",
       "line_alt": "B_재밸런싱_증설_even",
-      "unshootable": 1,
-      "weld_robots": 2,
-      "cost5y": 32.0
+      "unshootable": 2,
+      "weld_robots": 4,
+      "robot_capex": 7.6,
+      "manual_touchup": 23.4,
+      "cost5y": 228.6
     },
     {
-      "body_design": "C_플랜지확대+첫타점이동",
+      "body_design": "C_개선",
       "line_alt": "B_재밸런싱_증설_even",
       "unshootable": 0,
-      "weld_robots": 2,
-      "cost5y": 29.0
+      "weld_robots": 4,
+      "robot_capex": 7.6,
+      "manual_touchup": 0.0,
+      "cost5y": 205.2
     }
   ]
 }

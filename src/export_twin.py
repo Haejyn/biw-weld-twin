@@ -10,53 +10,53 @@ from pathlib import Path
 import numpy as np
 
 import stage2
-from body import obstacles, spots
-from reach import GUN_LENGTH, check
-from robot import Robot
+from reach import GUN_LENGTH
 from salbp import balance, load, station_loads
-from stage1 import BASES, DESIGNS, HOME, WELD_S, TRANSFER_CLAMP_S, move_time, plan_robots, sequence
+from paths import plan_sequence
+from stage1 import BASES, DESIGNS, TRANSFER_CLAMP_S, judge, plan_robots
 
 warnings.filterwarnings("ignore")
 OUT = Path(__file__).resolve().parent.parent / "results"
 
 
 def body_payload(design, jph=60):
-    S, B = spots(design), obstacles(design)
-    robots = [Robot(b, np.pi / 2, GUN_LENGTH) for b in BASES]
-    ver = {(i, r): check(robots[r], s, B) for i, s in enumerate(S) for r in range(len(robots))}
+    S, B, robots, ver = judge(design)
     feas = {k: v.ok for k, v in ver.items()}
     shoot = [i for i in range(len(S)) if any(feas[i, r] for r in range(len(robots)))]
     budget = 3600 / jph - TRANSFER_CLAMP_S
-    plan, _ = plan_robots(ver, shoot, len(robots), budget)
+    plan, times, meta = plan_robots(ver, shoot, len(robots), budget, robots, B,
+                                    spot_geo={i: (S[i].pos, S[i].normal) for i in range(len(S))})
     owner = {i: r for r, ks in plan.items() for i in ks}
-    home = np.concatenate([[0], HOME[:6], [0, 0]])
     paths = []
     for r, ks in plan.items():
         if not ks:
             continue
-        qs = [ver[i, r].q for i in ks]
-        order, total = sequence(qs)
-        t, cur, frames = 0.0, home, [{"t": 0.0, "q": home[1:7].tolist(), "spot": None}]
-        for j in order:
-            t += move_time(cur, qs[j])
-            frames.append({"t": round(t, 3), "q": qs[j][1:7].tolist(), "spot": S[ks[j]].id})
-            t += WELD_S
-            frames.append({"t": round(t, 3), "q": qs[j][1:7].tolist(), "spot": S[ks[j]].id, "weld_end": True})
-            cur = qs[j]
-        t += move_time(cur, home) - 0.15
-        frames.append({"t": round(t, 3), "q": home[1:7].tolist(), "spot": None})
-        paths.append({"robot": r, "cycle_s": round(total, 2), "frames": frames})
+        order, total, keys, vias = plan_sequence(robots[r], [ver[i, r] for i in ks], B)
+        wait = meta["waits"].get(r, 0.0)
+        frames = [{"t": 0.0, "q": keys[0][1][1:7].tolist(), "spot": None}] if wait else []
+        seen = set()
+        for t, q, j in keys:
+            spot = S[ks[j]].id if j is not None else None
+            weld_end = j is not None and j in seen
+            if j is not None:
+                seen.add(j)
+            f = {"t": round(t + wait, 3), "q": np.asarray(q)[1:7].tolist(), "spot": spot}
+            if weld_end:
+                f["weld_end"] = True
+            frames.append(f)
+        paths.append({"robot": r, "cycle_s": round(total + wait, 2), "interlock_wait_s": round(wait, 2),
+                      "via_moves": vias, "frames": frames})
     return {
         "name": design.name, "notes": design.notes, "budget_s": budget,
-        "boxes": [{"name": bx.name, "lo": bx.lo.tolist(), "hi": bx.hi.tolist()} for bx in B],
+        "boxes": [{"name": bx.name, "part": bx.part, "lo": bx.lo.tolist(), "hi": bx.hi.tolist()} for bx in B],
         "spots": [{
             "id": s.id, "group": s.group, "pos": s.pos.tolist(), "normal": s.normal.tolist(),
             "robot": owner.get(i), "tilt": ver[i, owner[i]].tilt if i in owner else None,
             "approach": ver[i, owner[i]].approach.tolist() if i in owner else None,
             "reasons": sorted({ver[i, r].reason for r in range(len(robots)) if not feas[i, r]}),
         } for i, s in enumerate(S)],
-        "robots": [{"id": r, "base": list(bs), "yaw": np.pi / 2, "used": any(p["robot"] == r for p in paths)}
-                   for r, bs in enumerate(BASES)],
+        "robots": [{"id": r, "base": list(bs[:3]), "yaw": bs[3], "roll": bs[4], "overhead": bool(bs[4]),
+                    "used": any(p["robot"] == r for p in paths)} for r, bs in enumerate(BASES)],
         "paths": paths,
     }
 

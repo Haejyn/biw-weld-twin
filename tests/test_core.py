@@ -77,7 +77,7 @@ def _q(a1_deg):
 
 def test_plan_uses_one_robot_when_one_can_do_everything_in_budget():
     ver = {(i, r): Verdict(True, "ok", _q(i)) for i in range(5) for r in range(2)}
-    plan, times = plan_robots(ver, list(range(5)), 2, budget=45)
+    plan, times, _ = plan_robots(ver, list(range(5)), 2, budget=45)
     assert len(plan) == 1 and max(times.values()) <= 45
 
 
@@ -86,7 +86,7 @@ def test_plan_needs_two_robots_when_reach_is_split():
     for i in range(6):
         for r in range(2):
             ver[i, r] = Verdict((i < 3) == (r == 0), "ok", _q(i)) if (i < 3) == (r == 0) else Verdict(False, "unreachable")
-    plan, _ = plan_robots(ver, list(range(6)), 2, budget=45)
+    plan, _, _ = plan_robots(ver, list(range(6)), 2, budget=45)
     assert sorted(len(v) for v in plan.values()) == [3, 3]
 
 
@@ -96,8 +96,10 @@ def test_ai_features_follow_label_order():
     from surrogate import design_features
     _, rows = label((0, BASE_A))
     X = design_features(BASE_A)
-    assert len(rows) == len(X) == 75 * 4
-    assert [(i, r) for _, i, r, *_ in rows] == [(i, r) for i in range(75) for r in range(4)]
+    from stage1 import BASES
+    n = len(BASES)
+    assert len(rows) == len(X) == 75 * n
+    assert [(i, r) for _, i, r, *_ in rows] == [(i, r) for i in range(75) for r in range(n)]
 
 
 MODEL = Path(__file__).resolve().parent.parent / "models" / "surrogate.txt"
@@ -110,6 +112,39 @@ def test_ai_flags_the_bad_first_spot_and_clears_a_far_one():
     from explore import BASE_A, fast_predict
     thr = json.loads((MODEL.parent.parent / "results" / "surrogate.json").read_text())["threshold"]
     m = lgb.Booster(model_file=str(MODEL))
-    near, far = dict(BASE_A, member_first_spot=0.02), dict(BASE_A, member_first_spot=0.12)
+    near = dict(BASE_A, member_first_spot=0.02, sill_pillar_gap=0.07)
+    far = dict(BASE_A, member_first_spot=0.12, sill_pillar_gap=0.07)
     got = fast_predict(m, thr, [near, far])
     assert got[0] >= 1 and got[1] == 0
+
+
+# ── 판금 형상 · 경로 · 로봇끼리 ──
+def test_spots_sit_on_flange_plates():
+    from body import Design, obstacles, spots
+    d = Design("t")
+    boxes = {b.name: b for b in obstacles(d)}
+    for s in spots(d):
+        plate = {"sill": "sill_flange", "b_pillar": "pillar_flange", "member": "member_flange_rear"}[s.group]
+        b = boxes[plate]
+        assert np.all(s.pos >= b.lo - 1e-9) and np.all(s.pos <= b.hi + 1e-9), s.id
+
+
+def test_approach_path_blocked_by_a_plate_in_front():
+    from body import Box, Spot
+    spot = Spot("p", "t", np.array([0.5, 0.0, 0.5]), np.array([0, -1.0, 0]), away=np.array([0, 0, 1.0]))
+    # 타점 앞 100 mm 에 판이 가로막는다 — 용접 자세의 건은 안 닿지만 접근 경로에서 걸린다
+    wall = Box("w", np.array([0.3, -0.3, 0.2]), np.array([0.7, -0.29, 0.8]))
+    v = check(ROBOT, spot, [wall])
+    assert not v.ok and v.reason in ("approach_collision", "gun_collision")
+
+
+def test_two_robots_reaching_the_same_point_interlock():
+    from paths import HOME, resolve_interference
+    r1 = Robot((0.0, -1.9, 0), np.pi / 2, GUN_LENGTH)
+    r2 = Robot((1.3, -1.9, 0), np.pi / 2, GUN_LENGTH)
+    q1, *_ = r1.solve((0.65, -0.2, 0.8), (0, 1, 0))
+    q2, *_ = r2.solve((0.70, -0.2, 0.8), (0, 1, 0))
+    tl = {0: [(0.0, HOME, None), (1.0, q1, 0), (3.0, q1, 0), (4.0, HOME, None)],
+          1: [(0.0, HOME, None), (1.0, q2, 0), (3.0, q2, 0), (4.0, HOME, None)]}
+    waits, left = resolve_interference([r1, r2], tl)
+    assert left == 0 and waits[1] > 0 and waits[0] == 0

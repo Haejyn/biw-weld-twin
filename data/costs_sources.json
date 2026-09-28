@@ -1,0 +1,230 @@
+{
+  "meta": {
+    "compiled": "2026-09-29",
+    "purpose": "Unit costs for body-shop / assembly-line investment comparison (portfolio sim). Public sources only.",
+    "fx": {
+      "usd_krw": 1422.16,
+      "basis": "2025 annual average USD/KRW (Seoul FX market close, reported 2025-12-30)",
+      "source_url": "https://news.nate.com/view/20251230n30272",
+      "note": "All USD figures converted at this single rate. No inflation adjustment applied - older USD figures (2005/2014) are nominal of their year."
+    },
+    "applicability_legend": {
+      "direct": "measures the same thing in a comparable setting",
+      "proxy": "related measure; needs an assumption to use",
+      "rough": "order-of-magnitude only"
+    }
+  },
+  "items": [
+    {
+      "id": "spot_weld_robot_cell",
+      "name": "Spot-welding robot system, installed (robot + gun + controller + peripherals + systems engineering), per robot",
+      "unit": "KRW per robot installed",
+      "low_krw": 146482480,
+      "typical_krw": 189147280,
+      "high_krw": 258833120,
+      "original": {
+        "low": { "value": 103000, "currency": "USD", "year": 2025, "kind": "BCG projection for 2025" },
+        "typical": { "value": 133000, "currency": "USD", "year": 2014 },
+        "high": { "value": 182000, "currency": "USD", "year": 2005 }
+      },
+      "source": {
+        "title": "How Robots Will Redefine Competitiveness (The Robotics Revolution series)",
+        "publisher": "Boston Consulting Group (M. Zinser, J. Rose, H. Sirkin)",
+        "date": "2015-09-23",
+        "url": "https://www.bcg.com/publications/2015/lean-manufacturing-innovation-robots-redefine-competitiveness",
+        "alt_url": "https://circabc.europa.eu/sd/a/b3067f4e-ea5e-4864-9693-0645e5cbc053/BCG_The_Robotics_Revolution_Sep_2015_tcm80-197133.pdf",
+        "quote": "The total cost of purchasing and deploying a robotics system for spot welding in the U.S. automotive industry plunged from an average of $182,000 in 2005 to $133,000 in 2014 ... [projected] around $103,000 [by 2025]. Systems engineering ... around $46,000 [2014] vs $81,000 a decade earlier."
+      },
+      "applicability": "direct",
+      "note": "Direct: US automotive spot-welding system average incl. integration. Not Korea-specific, not a 200 kg class robot specifically; high value is a 2005 price, used only as an upper bound.",
+      "supporting": [
+        {
+          "what": "Average industrial robot ARM price (all types, hardware only)",
+          "value_usd": 30482,
+          "value_krw": 43350366,
+          "derivation": "IFR market value of installations US$16.5 bn / 541,302 units installed in 2023",
+          "source_title": "Top 5 Global Robotics Trends 2025",
+          "publisher": "International Federation of Robotics (IFR)",
+          "date": "2025-01-22",
+          "url": "https://ifr.org/ifr-press-releases/news/top-5-global-robotics-trends-2025",
+          "applicability": "proxy",
+          "note": "Excludes software, peripherals and systems engineering; average over all robot sizes, so a 200 kg spot-welding robot arm is above it. Useful only as a floor / arm share check (~16-23% of BCG system cost)."
+        }
+      ]
+    },
+    {
+      "id": "manual_assembly_station",
+      "name": "Manual final-assembly / trim station (conveyor section + tooling + fixtures), per station",
+      "unit": "KRW per station",
+      "low_krw": null,
+      "typical_krw": null,
+      "high_krw": null,
+      "original": null,
+      "source": null,
+      "applicability": null,
+      "note": "NOT FOUND. No official/statistical/academic public source giving a per-station cost for a manual trim/final-assembly station was found within the time budget. Only vendor/marketing blogs (automated cells, conveyor 'thousands of dollars per foot') turned up; not used. If needed, derive from item 4 (plant capex per unit capacity) with an explicit, labelled assumption on share of capex in the assembly shop and number of stations."
+    },
+    {
+      "id": "labour_cost_per_worker",
+      "name": "Annual labour cost per production worker, Korean auto OEM",
+      "unit": "KRW per worker-year",
+      "low_krw": 85200000,
+      "typical_krw": 134000000,
+      "high_krw": 167625172,
+      "original": {
+        "low": { "value": 85200000, "currency": "KRW", "year": 2022, "kind": "wage only, KSIC C301 engine & motor vehicle mfg, annual pay per worker" },
+        "typical": { "value": 134000000, "currency": "KRW", "year": 2025, "kind": "Kia avg pay per employee (all staff), wage only" },
+        "high": { "value": 167625172, "currency": "KRW", "year": 2025, "kind": "derived: Kia avg pay x 1.251 employer loading" }
+      },
+      "sources": [
+        {
+          "what": "Kia 2025 사업보고서 직원 1인 평균 급여액 1억3,400만원 (2024: 1억3,600만원)",
+          "publisher": "Kia (DART/KIND 사업보고서), reported by Financial News",
+          "date": "2026-03-12",
+          "url": "https://kind.krx.co.kr/common/disclsviewer.do?method=search&acptno=20260312002040&docno=&viewerhost=",
+          "alt_url": "https://www.fnnews.com/news/202603121734196765",
+          "applicability": "direct",
+          "note": "Company disclosure. Average over all employees (production + office + R&D), wage only (no employer social insurance / retirement)."
+        },
+        {
+          "what": "Hyundai Motor 2025 사업보고서 직원 평균 급여 1억3,100만원 (2024: 1억2,400만원)",
+          "publisher": "Hyundai Motor (사업보고서), reported by Newsis",
+          "date": "2026-03-18",
+          "url": "https://www.newsis.com/view/NISX20260318_0003553411",
+          "applicability": "direct",
+          "note": "Cross-check for typical value."
+        },
+        {
+          "what": "KSIC C301 자동차용 엔진 및 자동차 제조업 1인당 연간급여액 85.2백만원 (2022); C30 전체 57.8백만원",
+          "publisher": "통계청 광업제조업조사 (KOSIS), tabulated in 자동차ISC '2024 자동차산업 인력현황 조사·분석' 표-16",
+          "date": "2024",
+          "url": "https://katechtest.co.kr/assets/upload/information/%EC%9E%90%EB%8F%99%EC%B0%A8ISC_2024%EB%85%84%20%EC%9E%90%EB%8F%99%EC%B0%A8%EC%82%B0%EC%97%85%20%EC%9D%B8%EB%A0%A5%ED%98%84%ED%99%A9%20%EB%B3%B4%EA%B3%A0%EC%84%9C_%EC%B5%9C%EC%A2%85.pdf",
+          "applicability": "direct",
+          "note": "Official statistics, 10+ employee establishments, finished-vehicle makers. 2022 value (older)."
+        },
+        {
+          "what": "KSIC C30 자동차 및 트레일러 제조업 월평균 임금 532.4만원 (2022) = 63.9백만원/년",
+          "publisher": "고용노동부 사업체노동력조사 (KOSIS), same ISC report p.37",
+          "date": "2024",
+          "url": "https://katechtest.co.kr/assets/upload/information/%EC%9E%90%EB%8F%99%EC%B0%A8ISC_2024%EB%85%84%20%EC%9E%90%EB%8F%99%EC%B0%A8%EC%82%B0%EC%97%85%20%EC%9D%B8%EB%A0%A5%ED%98%84%ED%99%A9%20%EB%B3%B4%EA%B3%A0%EC%84%9C_%EC%B5%9C%EC%A2%85.pdf",
+          "applicability": "proxy",
+          "note": "Whole auto industry incl. parts suppliers - too low for an OEM line; shown for context only."
+        },
+        {
+          "what": "Employer loading: 1인당 월평균 노동비용 636.1만원 = 직접 508.5만원 + 간접 127.6만원 -> total/direct = 1.251 (2024 회계연도, 10인 이상 전산업; 300인 이상 775.2만원, 제조업 722.1만원)",
+          "publisher": "고용노동부 기업체노동비용조사",
+          "date": "2025-10-10",
+          "url": "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18422",
+          "applicability": "proxy",
+          "note": "All-industry ratio used as the multiplier from pay to employer cost (social insurance, retirement, welfare, training)."
+        }
+      ],
+      "applicability": "direct",
+      "shift_note": "Hyundai/Kia domestic plants run two daytime-continuous shifts (주간연속2교대). A station staffed on both shifts costs 2 x (per-worker cost) per year before any relief/absence allowance; the relief factor was not sourced and is left to the model as an explicit assumption."
+    },
+    {
+      "id": "plant_capex_per_capacity",
+      "name": "New vehicle plant / line investment per unit of annual capacity",
+      "unit": "KRW per (vehicle/year) of capacity",
+      "low_krw": 6666667,
+      "typical_krw": 10000000,
+      "high_krw": 16000000,
+      "cases": [
+        {
+          "plant": "Kia Hwaseong PBV plant (EVO Plant East), groundbreaking announcement",
+          "investment": { "value": 1000000000000, "currency": "KRW", "year": 2023 },
+          "capacity_per_year": 150000,
+          "krw_per_unit_capacity": 6666667,
+          "publisher": "대한경제 (dnews)",
+          "date": "2023-04-12",
+          "url": "https://www.dnews.co.kr/uhtml/view.jsp?idxno=202304120733561540824",
+          "applicability": "direct",
+          "note": "Announced ~1조, 'up to 15만 대'. Later reporting (2025-11) gives East = 10만 대/yr PV5 -> 10.0M KRW per unit if 1조 is East only."
+        },
+        {
+          "plant": "Kia Hwaseong EVO Plant complex (East + West + PBV conversion center)",
+          "investment": { "value": 4000000000000, "currency": "KRW", "year": 2025, "kind": "facility + R&D" },
+          "capacity_per_year": 250000,
+          "krw_per_unit_capacity": 16000000,
+          "publisher": "상용차매거진 (cvinfo)",
+          "date": "2025-11-14",
+          "url": "https://www.cvinfo.com/news/articleView.html?idxno=30267",
+          "applicability": "rough",
+          "note": "4조 includes R&D, not just plant capex -> upper bound."
+        },
+        {
+          "plant": "Hyundai Ulsan EV dedicated plant",
+          "investment": { "value": 2000000000000, "currency": "KRW", "year": 2023 },
+          "capacity_per_year": 200000,
+          "krw_per_unit_capacity": 10000000,
+          "publisher": "Hyundai Motor Group newsroom",
+          "date": "2023-11-13",
+          "url": "https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-ulsan-plant-centennial-vision-new-challenge",
+          "applicability": "direct",
+          "note": "Company announcement: ~2조 new investment, 20만 대/yr, SOP 2026 Q1. Full plant (press, body, paint, GA)."
+        },
+        {
+          "plant": "Hyundai Motor Group Metaplant America (HMGMA), Georgia",
+          "investment": { "value": 7590000000, "currency": "USD", "year": 2025 },
+          "capacity_per_year": 300000,
+          "krw_per_unit_capacity": 35980648,
+          "usd_per_unit_capacity": 25300,
+          "alt": { "capacity_per_year": 500000, "usd_per_unit_capacity": 15180, "krw_per_unit_capacity": 21588389 },
+          "publisher": "Georgia Department of Economic Development (georgia.org); capacity also in HMG release 2025-03-26",
+          "date": "2025-03-26",
+          "url": "https://georgia.org/hyundaimotorgroup",
+          "alt_url": "https://www.hyundaimotorgroup.com/en/news/CONT0000000000173041",
+          "applicability": "rough",
+          "note": "Greenfield US site incl. land/infrastructure; scope of $7.59B vs battery JV not stated precisely. Not used for low/typical/high - shown as a greenfield-overseas upper reference."
+        }
+      ],
+      "applicability": "direct",
+      "small_line_rule": "Rough fixed cost of a small dedicated line = capacity x KRW/unit-capacity. E.g. 50,000 cars/yr x 10.0M = 5,000억 KRW (range 3,333억-8,000억 with low/high). These are whole-plant ratios (press+body+paint+GA+buildings); a single shop or a line added in an existing plant costs less - treat as rough.",
+      "note": "Low/typical/high from Korean domestic announcements only (Kia PBV 1조/15만, Hyundai Ulsan 2조/20만, Kia EVO 4조/25만 incl. R&D)."
+    },
+    {
+      "id": "value_of_lost_car",
+      "name": "Operating profit per wholesale vehicle (value of one lost car)",
+      "unit": "KRW per vehicle",
+      "low_krw": 2771102,
+      "typical_krw": 2894920,
+      "high_krw": 4100314,
+      "cases": [
+        {
+          "company": "Kia", "year": 2025,
+          "operating_profit_krw": 9078100000000, "wholesale_units": 3135873,
+          "krw_per_unit": 2894920,
+          "publisher": "Kia via Hyundai Motor Group newsroom",
+          "date": "2026-01-28",
+          "url": "https://www.hyundaimotorgroup.com/en/news/kia-announces-2025-annual-and-fourth-quarter-business-results"
+        },
+        {
+          "company": "Kia", "year": 2024,
+          "operating_profit_krw": 12667100000000, "wholesale_units": 3089300,
+          "krw_per_unit": 4100314,
+          "publisher": "Kia via Hyundai Motor Group newsroom",
+          "date": "2025-01-24",
+          "url": "https://www.hyundaimotorgroup.com/ko/news/CONT0000000000168809"
+        },
+        {
+          "company": "Hyundai Motor", "year": 2025,
+          "operating_profit_krw": 11467900000000, "wholesale_units": 4138389,
+          "krw_per_unit": 2771102,
+          "publisher": "Hyundai Motor Group newsroom",
+          "date": "2026-01-29",
+          "url": "https://www.hyundaimotorgroup.com/en/news/hyundai-motor-announces-2025-annual-and-q4-business-results"
+        },
+        {
+          "company": "Hyundai Motor", "year": 2024,
+          "operating_profit_krw": 14239600000000, "wholesale_units": 4141959,
+          "krw_per_unit": 3437890,
+          "publisher": "라이센스뉴스 (company results release)",
+          "date": "2025-01",
+          "url": "https://www.lcnews.co.kr/news/articleView.html?idxno=93322"
+        }
+      ],
+      "applicability": "proxy",
+      "note": "Consolidated operating profit / wholesale units. This is a LOWER BOUND for contribution margin (CM excludes fixed cost, so CM per car > OP per car); Hyundai's consolidated OP also contains its finance segment. 2025 is depressed by US tariffs. Contribution margin itself is not disclosed - not found."
+    }
+  ]
+}

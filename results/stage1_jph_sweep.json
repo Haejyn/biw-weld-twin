@@ -3,168 +3,153 @@
     "design": "A_기준",
     "jph": 50,
     "robot_budget_s": 57.0,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 43.7
-  },
-  {
-    "design": "A_기준",
-    "jph": 55,
-    "robot_budget_s": 50.5,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 43.7
+    "robots_used": 3,
+    "unshootable": 2,
+    "max_robot_time_s": 54.0,
+    "robot_time_s": {
+      "R1@x=-0.1": 34.5,
+      "R3@x=2.5": 54.0,
+      "R5천장@x=1.8": 19.2
+    },
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R1": 0.0,
+      "R3": 0.1
+    },
+    "via_moves": 2
   },
   {
     "design": "A_기준",
     "jph": 60,
     "robot_budget_s": 45.0,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 43.7
-  },
-  {
-    "design": "A_기준",
-    "jph": 65,
-    "robot_budget_s": 40.4,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 31.8
+    "robots_used": 4,
+    "unshootable": 2,
+    "max_robot_time_s": 44.3,
+    "robot_time_s": {
+      "R1@x=-0.1": 26.6,
+      "R2@x=1.2": 44.3,
+      "R3@x=2.5": 26.6,
+      "R5천장@x=1.8": 19.2
+    },
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R3": 0.0,
+      "R1": 0.0,
+      "R2": 0.0
+    },
+    "via_moves": 1
   },
   {
     "design": "A_기준",
     "jph": 70,
     "robot_budget_s": 36.4,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 31.8
-  },
-  {
-    "design": "A_기준",
-    "jph": 75,
-    "robot_budget_s": 33.0,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 31.8
-  },
-  {
-    "design": "A_기준",
-    "jph": 80,
-    "robot_budget_s": 30.0,
-    "robots_used": 4,
-    "unshootable": 1,
-    "max_robot_time_s": 26.5
+    "robots_used": null,
+    "unshootable": 2,
+    "max_robot_time_s": null,
+    "robot_time_s": {},
+    "interlock_wait_s": {},
+    "via_moves": null
   },
   {
     "design": "B_플랜지확대",
     "jph": 50,
     "robot_budget_s": 57.0,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 45.1
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 55,
-    "robot_budget_s": 50.5,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 45.1
+    "robots_used": 3,
+    "unshootable": 2,
+    "max_robot_time_s": 54.0,
+    "robot_time_s": {
+      "R1@x=-0.1": 34.5,
+      "R3@x=2.5": 54.0,
+      "R5천장@x=1.8": 19.2
+    },
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R1": 0.0,
+      "R3": 0.1
+    },
+    "via_moves": 2
   },
   {
     "design": "B_플랜지확대",
     "jph": 60,
     "robot_budget_s": 45.0,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 44.1
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 65,
-    "robot_budget_s": 40.4,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 32.4
+    "robots_used": 4,
+    "unshootable": 2,
+    "max_robot_time_s": 44.3,
+    "robot_time_s": {
+      "R1@x=-0.1": 26.6,
+      "R2@x=1.2": 44.3,
+      "R3@x=2.5": 26.6,
+      "R5천장@x=1.8": 19.2
+    },
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R3": 0.0,
+      "R1": 0.0,
+      "R2": 0.0
+    },
+    "via_moves": 1
   },
   {
     "design": "B_플랜지확대",
     "jph": 70,
     "robot_budget_s": 36.4,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 32.4
+    "robots_used": null,
+    "unshootable": 2,
+    "max_robot_time_s": null,
+    "robot_time_s": {},
+    "interlock_wait_s": {},
+    "via_moves": null
   },
   {
-    "design": "B_플랜지확대",
-    "jph": 75,
-    "robot_budget_s": 33.0,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 32.4
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 80,
-    "robot_budget_s": 30.0,
-    "robots_used": 4,
-    "unshootable": 1,
-    "max_robot_time_s": 27.8
-  },
-  {
-    "design": "C_플랜지확대+첫타점이동",
+    "design": "C_개선",
     "jph": 50,
     "robot_budget_s": 57.0,
-    "robots_used": 2,
+    "robots_used": 3,
     "unshootable": 0,
-    "max_robot_time_s": 45.7
+    "max_robot_time_s": 56.4,
+    "robot_time_s": {
+      "R1@x=-0.1": 37.1,
+      "R2@x=1.2": 56.4,
+      "R5천장@x=1.8": 20.5
+    },
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R1": 0.0,
+      "R2": 0.0
+    },
+    "via_moves": 2
   },
   {
-    "design": "C_플랜지확대+첫타점이동",
-    "jph": 55,
-    "robot_budget_s": 50.5,
-    "robots_used": 2,
-    "unshootable": 0,
-    "max_robot_time_s": 45.7
-  },
-  {
-    "design": "C_플랜지확대+첫타점이동",
+    "design": "C_개선",
     "jph": 60,
     "robot_budget_s": 45.0,
-    "robots_used": 2,
-    "unshootable": 0,
-    "max_robot_time_s": 45.0
-  },
-  {
-    "design": "C_플랜지확대+첫타점이동",
-    "jph": 65,
-    "robot_budget_s": 40.4,
-    "robots_used": 3,
-    "unshootable": 0,
-    "max_robot_time_s": 32.4
-  },
-  {
-    "design": "C_플랜지확대+첫타점이동",
-    "jph": 70,
-    "robot_budget_s": 36.4,
-    "robots_used": 3,
-    "unshootable": 0,
-    "max_robot_time_s": 32.4
-  },
-  {
-    "design": "C_플랜지확대+첫타점이동",
-    "jph": 75,
-    "robot_budget_s": 33.0,
-    "robots_used": 3,
-    "unshootable": 0,
-    "max_robot_time_s": 32.4
-  },
-  {
-    "design": "C_플랜지확대+첫타점이동",
-    "jph": 80,
-    "robot_budget_s": 30.0,
     "robots_used": 4,
     "unshootable": 0,
-    "max_robot_time_s": 28.8
+    "max_robot_time_s": 44.3,
+    "robot_time_s": {
+      "R1@x=-0.1": 27.9,
+      "R2@x=1.2": 44.3,
+      "R3@x=2.5": 28.1,
+      "R5천장@x=1.8": 20.5
+    },
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R3": 1.4,
+      "R1": 0.0,
+      "R2": 0.0
+    },
+    "via_moves": 1
+  },
+  {
+    "design": "C_개선",
+    "jph": 70,
+    "robot_budget_s": 36.4,
+    "robots_used": null,
+    "unshootable": 0,
+    "max_robot_time_s": null,
+    "robot_time_s": {},
+    "interlock_wait_s": {},
+    "via_moves": null
   }
 ]

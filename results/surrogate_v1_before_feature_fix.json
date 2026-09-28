@@ -1,60 +1,60 @@
 {
   "engineered": {
-    "threshold": 0.05,
+    "threshold": 0.92,
     "train_pairs": 300000,
     "test_pairs": 75000,
     "test_designs": 200,
-    "trees": 218,
-    "pair_auc": 1.0,
-    "pair_acc": 0.9943,
+    "trees": 197,
+    "pair_auc": 0.9998,
+    "pair_acc": 0.992,
     "unshootable_spots_true": 720,
-    "unshootable_recall": 0.9986,
-    "unshootable_precision": 1.0,
-    "design_flag_acc": 0.995,
-    "design_count_exact": 0.995
+    "unshootable_recall": 0.9792,
+    "unshootable_precision": 0.9338,
+    "design_flag_acc": 0.98,
+    "design_count_exact": 0.915
   },
-  "threshold": 0.05,
-  "surrogate_s_per_design": 0.0479,
+  "threshold": 0.9199999999999999,
+  "surrogate_s_per_design": 0.0449,
   "explain_infeasible": [
     [
-      "rel_z",
-      5.118
-    ],
-    [
       "rel_y",
-      4.161
+      3.709
     ],
     [
-      "spot_y",
-      0.93
-    ],
-    [
-      "normal_toward_robot",
-      0.86
+      "rel_z",
+      2.95
     ],
     [
       "clear_arm_pillar",
-      0.526
+      2.483
     ],
     [
-      "clear_body_best",
-      0.473
+      "spot_y",
+      0.827
     ],
     [
-      "clear_gun_best",
-      0.408
+      "normal_toward_robot",
+      0.591
     ],
     [
-      "is_member",
-      0.308
+      "member_wall_height",
+      0.271
+    ],
+    [
+      "flange_width",
+      0.257
     ],
     [
       "rel_x",
-      0.282
+      0.25
     ],
     [
       "dy_sill_face",
-      0.17
+      0.191
+    ],
+    [
+      "is_member",
+      0.183
     ]
   ],
   "raw": {

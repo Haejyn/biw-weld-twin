@@ -1,81 +1,124 @@
 [
   {
     "design": "A_기준",
-    "notes": "크로스멤버 플랜지 15mm, 첫 타점이 실 안쪽 벽에서 70mm",
+    "notes": "크로스멤버 플랜지 15 mm · 첫 타점 30 mm · 실 타점–B필러 30 mm",
     "jph": 60,
     "params": {
       "flange_width": 0.015,
       "member_wall_height": 0.12,
-      "spot_pitch": 0.05,
-      "member_y": [
-        0.12,
-        0.8
-      ],
-      "member_first_spot": 0.03
+      "member_first_spot": 0.03,
+      "sill_pillar_gap": 0.03,
+      "pillar_w": 0.16,
+      "member_x": 1.2
     },
     "spots": 75,
     "unshootable": [
+      "S23",
       "M00"
     ],
+    "unshootable_reasons": {
+      "S23": [
+        "gun_collision"
+      ],
+      "M00": [
+        "gun_collision"
+      ]
+    },
     "takt_s": 60.0,
     "robot_budget_s": 45.0,
-    "robots_used": 2,
+    "robots_used": 4,
     "robot_time_s": {
-      "R1@x=0.55": 42.1,
-      "R3@x=3.15": 43.7
+      "R1@x=-0.1": 26.6,
+      "R2@x=1.2": 44.3,
+      "R3@x=2.5": 26.6,
+      "R5천장@x=1.8": 19.2
     },
-    "tilted_spots": 18
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R3": 0.0,
+      "R1": 0.0,
+      "R2": 0.0
+    },
+    "via_moves": 1,
+    "judge_s": 0.0,
+    "plan_s": 148.8
   },
   {
     "design": "B_플랜지확대",
-    "notes": "플랜지 30mm 로 넓힘",
+    "notes": "A 에서 크로스멤버 플랜지만 30 mm 로",
     "jph": 60,
     "params": {
       "flange_width": 0.03,
       "member_wall_height": 0.12,
-      "spot_pitch": 0.05,
-      "member_y": [
-        0.12,
-        0.8
-      ],
-      "member_first_spot": 0.03
+      "member_first_spot": 0.03,
+      "sill_pillar_gap": 0.03,
+      "pillar_w": 0.16,
+      "member_x": 1.2
     },
     "spots": 75,
     "unshootable": [
+      "S23",
       "M00"
     ],
+    "unshootable_reasons": {
+      "S23": [
+        "gun_collision"
+      ],
+      "M00": [
+        "gun_collision"
+      ]
+    },
     "takt_s": 60.0,
     "robot_budget_s": 45.0,
-    "robots_used": 2,
+    "robots_used": 4,
     "robot_time_s": {
-      "R0@x=-0.75": 44.1,
-      "R1@x=0.55": 43.0
+      "R1@x=-0.1": 26.6,
+      "R2@x=1.2": 44.3,
+      "R3@x=2.5": 26.6,
+      "R5천장@x=1.8": 19.2
     },
-    "tilted_spots": 15
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R3": 0.0,
+      "R1": 0.0,
+      "R2": 0.0
+    },
+    "via_moves": 1,
+    "judge_s": 0.0,
+    "plan_s": 160.2
   },
   {
-    "design": "C_플랜지확대+첫타점이동",
-    "notes": "B + 크로스멤버 첫 타점을 구간 시작에서 80mm 로 (타점 수 13 그대로)",
+    "design": "C_개선",
+    "notes": "B + 크로스멤버 첫 타점 80 mm + 실 타점–B필러 50 mm (타점 수 그대로)",
     "jph": 60,
     "params": {
       "flange_width": 0.03,
       "member_wall_height": 0.12,
-      "spot_pitch": 0.05,
-      "member_y": [
-        0.12,
-        0.8
-      ],
-      "member_first_spot": 0.08
+      "member_first_spot": 0.08,
+      "sill_pillar_gap": 0.05,
+      "pillar_w": 0.16,
+      "member_x": 1.2
     },
     "spots": 75,
     "unshootable": [],
+    "unshootable_reasons": {},
     "takt_s": 60.0,
     "robot_budget_s": 45.0,
-    "robots_used": 2,
+    "robots_used": 4,
     "robot_time_s": {
-      "R0@x=-0.75": 45.0,
-      "R1@x=0.55": 42.5
+      "R1@x=-0.1": 27.9,
+      "R2@x=1.2": 44.3,
+      "R3@x=2.5": 28.1,
+      "R5천장@x=1.8": 20.5
     },
-    "tilted_spots": 16
+    "interlock_wait_s": {
+      "R5": 0.0,
+      "R3": 1.4,
+      "R1": 0.0,
+      "R2": 0.0
+    },
+    "via_moves": 1,
+    "judge_s": 0.0,
+    "plan_s": 202.8
   }
 ]

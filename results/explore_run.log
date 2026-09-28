@@ -1,0 +1,12 @@
+map {'x_param': 'member_first_spot', 'y_param': 'sill_pillar_gap', 'agree_exact': 1.0, 'agree_flag': 1.0, 'ai_seconds_3600': 139.5, 'sim_seconds_64_on_3cores': 253.2}
+search {'candidates': 10000, 'ai_pass': 509, 'ai_seconds': 284.0, 'sim_seconds_equiv_est': 41134.0, 'top20_sim_unshootable': [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 'top20_verified': 18}
+0.373 {'flange_width': [0.015, 0.0181], 'member_wall_height': [0.12, 0.1113], 'member_first_spot': [0.03, 0.0588], 'member_y0': [0.12, 0.1442], 'member_x': [1.2, 1.1545], 'pillar_x': [1.2, 1.2356], 'pillar_w': [0.16, 0.1544], 'floor_z': [0.3, 0.3048], 'sill_pillar_gap': [0.03, 0.0503]}
+0.374 {'flange_width': [0.015, 0.0191], 'member_wall_height': [0.12, 0.1448], 'member_first_spot': [0.03, 0.0642], 'member_y0': [0.12, 0.1282], 'member_x': [1.2, 1.3468], 'pillar_x': [1.2, 1.1611], 'sill_top': [0.55, 0.5554], 'floor_z': [0.3, 0.3054], 'sill_pillar_gap': [0.03, 0.0455]}
+0.424 {'flange_width': [0.015, 0.0171], 'member_wall_height': [0.12, 0.1265], 'member_first_spot': [0.03, 0.0532], 'member_y0': [0.12, 0.1403], 'member_x': [1.2, 1.3759], 'pillar_x': [1.2, 1.0334], 'pillar_w': [0.16, 0.1544], 'sill_top': [0.55, 0.5672], 'floor_z': [0.3, 0.2941], 'sill_pillar_gap': [0.03, 0.0429]}
+0.451 {'member_wall_height': [0.12, 0.1062], 'member_first_spot': [0.03, 0.0545], 'member_y0': [0.12, 0.1643], 'member_x': [1.2, 1.1738], 'pillar_x': [1.2, 1.1639], 'pillar_w': [0.16, 0.1809], 'sill_top': [0.55, 0.5372], 'floor_z': [0.3, 0.2915], 'sill_pillar_gap': [0.03, 0.0507]}
+0.479 {'flange_width': [0.015, 0.0109], 'member_wall_height': [0.12, 0.116], 'member_first_spot': [0.03, 0.0548], 'member_y0': [0.12, 0.1546], 'member_x': [1.2, 0.9252], 'pillar_w': [0.16, 0.1313], 'sill_top': [0.55, 0.5372], 'floor_z': [0.3, 0.3032], 'sill_pillar_gap': [0.03, 0.0492]}
+probe member_first_spot 31/31 []
+probe sill_pillar_gap 16/17 [{'mm': 20, 'ai': 2, 'sim': 1}]
+full {'unshootable': 0, 'robots_used': None, 'max_robot_time_s': None, 'interlock_wait_s': {}, 'seconds': 194.4}
+full {'unshootable': 0, 'robots_used': None, 'max_robot_time_s': None, 'interlock_wait_s': {}, 'seconds': 183.9}
+full {'unshootable': 1, 'robots_used': None, 'max_robot_time_s': None, 'interlock_wait_s': {}, 'seconds': 199.2}

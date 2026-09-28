@@ -35,12 +35,16 @@ def build_chain(gun_length: float) -> Chain:
 
 
 class Robot:
-    """바닥에 놓인 로봇 한 대. base 는 월드 좌표(x, y, z), yaw 는 z 축 회전(라디안)."""
+    """로봇 한 대. base 는 월드 좌표(x, y, z), yaw 는 z 축 회전, roll 은 x 축 회전(라디안)."""
 
-    def __init__(self, base, yaw: float, gun_length: float):
+    def __init__(self, base, yaw: float, gun_length: float, roll: float = 0.0):
+        """roll = π 이면 천장에 거꾸로 단 로봇 (바닥 용접용)."""
         self.base = np.asarray(base, float)
         c, s = np.cos(yaw), np.sin(yaw)
-        self.rot = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+        rz = np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+        cr, sr = np.cos(roll), np.sin(roll)
+        rx = np.array([[1, 0, 0], [0, cr, -sr], [0, sr, cr]])
+        self.rot = rz @ rx
         self.chain = build_chain(gun_length)
 
     def to_local(self, p):
@@ -55,6 +59,9 @@ class Robot:
         axis = self.rot.T @ np.asarray(approach_world, float)
         q = self.chain.inverse_kinematics(target, axis, orientation_mode="X",
                                           initial_position=seed)
+        # a6 는 건 축(플랜지 x) 둘레 회전이라 전극 위치·건 방향을 바꾸지 않는다. 건을 축대칭으로 보므로
+        # 임의로 도는 a6 를 0 으로 고정해 타점 사이의 쓸데없는 손목 회전을 없앤다.
+        q = np.array(q, float); q[6] = 0.0
         frame = self.chain.forward_kinematics(q)
         pos_err = float(np.linalg.norm(frame[:3, 3] - target))
         ang_err = float(np.degrees(np.arccos(np.clip(frame[:3, 0] @ axis, -1, 1))))

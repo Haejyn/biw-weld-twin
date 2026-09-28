@@ -21,12 +21,13 @@ SPACE = {
     "flange_width": (0.008, 0.050),
     "member_wall_height": (0.05, 0.25),
     "member_first_spot": (0.00, 0.15),
-    "member_y0": (0.08, 0.25),
+    "member_y0": (0.085, 0.25),
     "member_x": (0.60, 1.80),
     "pillar_x": (0.90, 1.50),
     "pillar_w": (0.10, 0.26),
     "sill_top": (0.45, 0.65),
     "floor_z": (0.25, 0.35),
+    "sill_pillar_gap": (0.0, 0.08),
 }
 PARAMS = list(SPACE)
 
@@ -37,8 +38,7 @@ def make_design(v: dict, name="gen"):
     return Design(name, flange_width=v["flange_width"], member_wall_height=v["member_wall_height"],
                   member_first_spot=v["member_first_spot"], member_y=(y0, y0 + 0.68),
                   member_x=v["member_x"], pillar_x=v["pillar_x"], pillar_w=v["pillar_w"],
-                  sill_top=v["sill_top"], floor_z=v["floor_z"],
-                  sill_spot_z=(v["floor_z"] + v["sill_top"]) / 2)
+                  sill_top=v["sill_top"], floor_z=v["floor_z"], sill_pillar_gap=v["sill_pillar_gap"])
 
 
 def sample(rng, n):
@@ -50,10 +50,10 @@ def label(args):
     from body import obstacles, spots
     from reach import GUN_LENGTH, check
     from robot import Robot
-    from stage1 import BASES
+    from stage1 import BASES, make_robot
     d = make_design(v)
     S, B = spots(d), obstacles(d)
-    robots = [Robot(b, np.pi / 2, GUN_LENGTH) for b in BASES]
+    robots = [make_robot(b) for b in BASES]
     rows = []
     for i, s in enumerate(S):
         for r, rb in enumerate(robots):
