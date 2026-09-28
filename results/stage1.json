@@ -21,10 +21,10 @@
     "robot_budget_s": 45.0,
     "robots_used": 2,
     "robot_time_s": {
-      "R0@x=0.0": 36.1,
-      "R1@x=0.8": 44.8
+      "R1@x=0.55": 42.1,
+      "R3@x=3.15": 43.7
     },
-    "tilted_spots": 12
+    "tilted_spots": 18
   },
   {
     "design": "B_플랜지확대",
@@ -48,10 +48,10 @@
     "robot_budget_s": 45.0,
     "robots_used": 2,
     "robot_time_s": {
-      "R0@x=0.0": 35.7,
-      "R1@x=0.8": 44.8
+      "R0@x=-0.75": 44.1,
+      "R1@x=0.55": 43.0
     },
-    "tilted_spots": 12
+    "tilted_spots": 15
   },
   {
     "design": "C_플랜지확대+첫타점이동",
@@ -73,9 +73,9 @@
     "robot_budget_s": 45.0,
     "robots_used": 2,
     "robot_time_s": {
-      "R0@x=0.0": 38.9,
-      "R1@x=0.8": 41.6
+      "R0@x=-0.75": 45.0,
+      "R1@x=0.55": 42.5
     },
-    "tilted_spots": 8
+    "tilted_spots": 16
   }
 ]

@@ -69,6 +69,35 @@ def fig_stage2():
     fig.savefig(OUT / "fig_stage2_alternatives.png", dpi=180)
 
 
+def fig_map():
+    import numpy as np
+    from matplotlib.colors import ListedColormap
+    r = json.loads((OUT / "explore.json").read_text(encoding="utf-8"))["map"]
+    ai = np.array(r["ai_grid"])
+    fw, fs = np.array(r["fw"]) * 1000, np.array(r["fs"]) * 1000
+    cmap = ListedColormap(["#1c2b3a", "#8a4a2c", "#c4562a", "#eb6834"])
+    fig, ax = plt.subplots(figsize=(6.2, 4.2))
+    ax.pcolormesh(fw, fs, np.clip(ai, 0, 3), cmap=cmap, vmin=0, vmax=3, shading="nearest")
+    sim = np.array(r["sim_grid"])
+    for j, y in enumerate(np.array(r["cs"]) * 1000):
+        for i, x in enumerate(np.array(r["cw"]) * 1000):
+            ok = sim[j, i] == np.array(r["ai_on_sim_points"])[j, i]
+            ax.scatter(x, y, s=46, marker="o" if ok else "X", color="white" if ok else "#ffd23f",
+                       edgecolor="#1a1a19", linewidth=0.8, zorder=3)
+            ax.text(x + 0.7, y + 3, str(int(sim[j, i])), color="white", fontsize=7, zorder=4)
+    ax.scatter([15], [30], s=160, marker="*", color="#2a78d6", edgecolor="white", linewidth=1.2, zorder=5)
+    ax.text(16.5, 33, "기준 A", color="white", fontsize=9, zorder=5)
+    ax.set_xlabel("크로스멤버 플랜지 폭 (mm)")
+    ax.set_ylabel("첫 타점 거리 (mm)")
+    ax.set_title("AI 제조성 지도 — 색: AI 예측 못 쏘는 타점 수 (0 짙음 → 3+ 주황)\n점: 시뮬레이터 검증 (숫자 = 실제 값, ✕ = 불일치)",
+                 loc="left", color=INK, fontsize=9.5)
+    fig.tight_layout()
+    fig.savefig(OUT / "fig_map.png", dpi=180)
+
+
 if __name__ == "__main__":
+    import sys
     fig_stage1()
     fig_stage2()
+    if (OUT / "explore.json").exists():
+        fig_map()

@@ -2,3 +2,5 @@
 __pycache__/
 .pytest_cache/
 data/salbp/salbp.zip
+data/gen/
+models/

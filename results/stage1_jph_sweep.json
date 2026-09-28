@@ -5,7 +5,7 @@
     "robot_budget_s": 57.0,
     "robots_used": 2,
     "unshootable": 1,
-    "max_robot_time_s": 55.3
+    "max_robot_time_s": 43.7
   },
   {
     "design": "A_기준",
@@ -13,7 +13,7 @@
     "robot_budget_s": 50.5,
     "robots_used": 2,
     "unshootable": 1,
-    "max_robot_time_s": 49.2
+    "max_robot_time_s": 43.7
   },
   {
     "design": "A_기준",
@@ -21,7 +21,7 @@
     "robot_budget_s": 45.0,
     "robots_used": 2,
     "unshootable": 1,
-    "max_robot_time_s": 44.8
+    "max_robot_time_s": 43.7
   },
   {
     "design": "A_기준",
@@ -29,7 +29,7 @@
     "robot_budget_s": 40.4,
     "robots_used": 3,
     "unshootable": 1,
-    "max_robot_time_s": 37.1
+    "max_robot_time_s": 31.8
   },
   {
     "design": "A_기준",
@@ -37,66 +37,10 @@
     "robot_budget_s": 36.4,
     "robots_used": 3,
     "unshootable": 1,
-    "max_robot_time_s": 34.7
+    "max_robot_time_s": 31.8
   },
   {
     "design": "A_기준",
-    "jph": 75,
-    "robot_budget_s": 33.0,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 27.3
-  },
-  {
-    "design": "A_기준",
-    "jph": 80,
-    "robot_budget_s": 30.0,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 26.6
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 50,
-    "robot_budget_s": 57.0,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 55.3
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 55,
-    "robot_budget_s": 50.5,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 47.5
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 60,
-    "robot_budget_s": 45.0,
-    "robots_used": 2,
-    "unshootable": 1,
-    "max_robot_time_s": 44.8
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 65,
-    "robot_budget_s": 40.4,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 37.5
-  },
-  {
-    "design": "B_플랜지확대",
-    "jph": 70,
-    "robot_budget_s": 36.4,
-    "robots_used": 3,
-    "unshootable": 1,
-    "max_robot_time_s": 34.6
-  },
-  {
-    "design": "B_플랜지확대",
     "jph": 75,
     "robot_budget_s": 33.0,
     "robots_used": 3,
@@ -104,12 +48,68 @@
     "max_robot_time_s": 31.8
   },
   {
+    "design": "A_기준",
+    "jph": 80,
+    "robot_budget_s": 30.0,
+    "robots_used": 4,
+    "unshootable": 1,
+    "max_robot_time_s": 26.5
+  },
+  {
+    "design": "B_플랜지확대",
+    "jph": 50,
+    "robot_budget_s": 57.0,
+    "robots_used": 2,
+    "unshootable": 1,
+    "max_robot_time_s": 45.1
+  },
+  {
+    "design": "B_플랜지확대",
+    "jph": 55,
+    "robot_budget_s": 50.5,
+    "robots_used": 2,
+    "unshootable": 1,
+    "max_robot_time_s": 45.1
+  },
+  {
+    "design": "B_플랜지확대",
+    "jph": 60,
+    "robot_budget_s": 45.0,
+    "robots_used": 2,
+    "unshootable": 1,
+    "max_robot_time_s": 44.1
+  },
+  {
+    "design": "B_플랜지확대",
+    "jph": 65,
+    "robot_budget_s": 40.4,
+    "robots_used": 3,
+    "unshootable": 1,
+    "max_robot_time_s": 32.4
+  },
+  {
+    "design": "B_플랜지확대",
+    "jph": 70,
+    "robot_budget_s": 36.4,
+    "robots_used": 3,
+    "unshootable": 1,
+    "max_robot_time_s": 32.4
+  },
+  {
+    "design": "B_플랜지확대",
+    "jph": 75,
+    "robot_budget_s": 33.0,
+    "robots_used": 3,
+    "unshootable": 1,
+    "max_robot_time_s": 32.4
+  },
+  {
     "design": "B_플랜지확대",
     "jph": 80,
     "robot_budget_s": 30.0,
-    "robots_used": 3,
+    "robots_used": 4,
     "unshootable": 1,
-    "max_robot_time_s": 28.5
+    "max_robot_time_s": 27.8
   },
   {
     "design": "C_플랜지확대+첫타점이동",
@@ -117,7 +117,7 @@
     "robot_budget_s": 57.0,
     "robots_used": 2,
     "unshootable": 0,
-    "max_robot_time_s": 55.4
+    "max_robot_time_s": 45.7
   },
   {
     "design": "C_플랜지확대+첫타점이동",
@@ -125,7 +125,7 @@
     "robot_budget_s": 50.5,
     "robots_used": 2,
     "unshootable": 0,
-    "max_robot_time_s": 49.1
+    "max_robot_time_s": 45.7
   },
   {
     "design": "C_플랜지확대+첫타점이동",
@@ -133,7 +133,7 @@
     "robot_budget_s": 45.0,
     "robots_used": 2,
     "unshootable": 0,
-    "max_robot_time_s": 44.8
+    "max_robot_time_s": 45.0
   },
   {
     "design": "C_플랜지확대+첫타점이동",
@@ -141,7 +141,7 @@
     "robot_budget_s": 40.4,
     "robots_used": 3,
     "unshootable": 0,
-    "max_robot_time_s": 39.0
+    "max_robot_time_s": 32.4
   },
   {
     "design": "C_플랜지확대+첫타점이동",
@@ -149,7 +149,7 @@
     "robot_budget_s": 36.4,
     "robots_used": 3,
     "unshootable": 0,
-    "max_robot_time_s": 33.3
+    "max_robot_time_s": 32.4
   },
   {
     "design": "C_플랜지확대+첫타점이동",
@@ -157,14 +157,14 @@
     "robot_budget_s": 33.0,
     "robots_used": 3,
     "unshootable": 0,
-    "max_robot_time_s": 32.2
+    "max_robot_time_s": 32.4
   },
   {
     "design": "C_플랜지확대+첫타점이동",
     "jph": 80,
     "robot_budget_s": 30.0,
-    "robots_used": 3,
+    "robots_used": 4,
     "unshootable": 0,
-    "max_robot_time_s": 27.4
+    "max_robot_time_s": 28.8
   }
 ]

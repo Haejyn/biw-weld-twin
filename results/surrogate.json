@@ -1,0 +1,74 @@
+{
+  "engineered": {
+    "threshold": 0.63,
+    "train_pairs": 600000,
+    "test_pairs": 120000,
+    "test_designs": 400,
+    "trees": 530,
+    "pair_auc": 0.9999,
+    "pair_acc": 0.9971,
+    "unshootable_spots_true": 327,
+    "unshootable_recall": 0.9633,
+    "unshootable_precision": 0.863,
+    "design_flag_acc": 0.9825,
+    "design_count_exact": 0.905
+  },
+  "threshold": 0.63,
+  "surrogate_s_per_design": 0.032,
+  "explain_infeasible": [
+    [
+      "is_member",
+      10.866
+    ],
+    [
+      "clear_arm_pillar",
+      2.491
+    ],
+    [
+      "dist_xy",
+      1.433
+    ],
+    [
+      "dist",
+      1.408
+    ],
+    [
+      "rel_x",
+      1.361
+    ],
+    [
+      "dx_pillar",
+      1.151
+    ],
+    [
+      "spot_y",
+      1.096
+    ],
+    [
+      "clear_arm_sill",
+      0.78
+    ],
+    [
+      "robot_x",
+      0.538
+    ],
+    [
+      "sill_above_spot",
+      0.501
+    ]
+  ],
+  "raw": {
+    "threshold": 0.83,
+    "train_pairs": 600000,
+    "test_pairs": 120000,
+    "test_designs": 400,
+    "trees": 1039,
+    "pair_auc": 0.9997,
+    "pair_acc": 0.9928,
+    "unshootable_spots_true": 327,
+    "unshootable_recall": 0.9633,
+    "unshootable_precision": 0.6969,
+    "design_flag_acc": 0.9225,
+    "design_count_exact": 0.8175
+  }
+}
