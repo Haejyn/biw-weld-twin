@@ -1,0 +1,102 @@
+[
+ {
+  "seed": 1,
+  "new_work_s": 858.0,
+  "A_even_jph": 56.57,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 7.8,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 2,
+  "new_work_s": 883.0,
+  "A_even_jph": 56.29,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 15.2,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 3,
+  "new_work_s": 866.4,
+  "A_even_jph": 56.91,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 15.8,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 4,
+  "new_work_s": 861.7,
+  "A_even_jph": 56.49,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 13.2,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 5,
+  "new_work_s": 851.3,
+  "A_even_jph": 57.04,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 15.8,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 6,
+  "new_work_s": 891.4,
+  "A_even_jph": 56.49,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 16.2,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 7,
+  "new_work_s": 848.6,
+  "A_even_jph": 57.14,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 18.1,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 8,
+  "new_work_s": 873.1,
+  "A_even_jph": 55.25,
+  "A_stops": 30.0,
+  "B_added": 1,
+  "B_random_stops": 14.2,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 9,
+  "new_work_s": 857.5,
+  "A_even_jph": 56.97,
+  "A_stops": 29.9,
+  "B_added": 1,
+  "B_random_stops": 15.7,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ },
+ {
+  "seed": 10,
+  "new_work_s": 850.9,
+  "A_even_jph": 57.06,
+  "A_stops": 29.9,
+  "B_added": 1,
+  "B_random_stops": 13.9,
+  "B_even_stops": 0.0,
+  "best": "B_재밸런싱_증설_even"
+ }
+]

@@ -1,0 +1,81 @@
+[
+  {
+    "design": "A_기준",
+    "notes": "크로스멤버 플랜지 15mm, 첫 타점이 실 안쪽 벽에서 70mm",
+    "jph": 60,
+    "params": {
+      "flange_width": 0.015,
+      "member_wall_height": 0.12,
+      "spot_pitch": 0.05,
+      "member_y": [
+        0.12,
+        0.8
+      ],
+      "member_first_spot": 0.03
+    },
+    "spots": 75,
+    "unshootable": [
+      "M00"
+    ],
+    "takt_s": 60.0,
+    "robot_budget_s": 45.0,
+    "robots_used": 2,
+    "robot_time_s": {
+      "R0@x=0.0": 36.1,
+      "R1@x=0.8": 44.8
+    },
+    "tilted_spots": 12
+  },
+  {
+    "design": "B_플랜지확대",
+    "notes": "플랜지 30mm 로 넓힘",
+    "jph": 60,
+    "params": {
+      "flange_width": 0.03,
+      "member_wall_height": 0.12,
+      "spot_pitch": 0.05,
+      "member_y": [
+        0.12,
+        0.8
+      ],
+      "member_first_spot": 0.03
+    },
+    "spots": 75,
+    "unshootable": [
+      "M00"
+    ],
+    "takt_s": 60.0,
+    "robot_budget_s": 45.0,
+    "robots_used": 2,
+    "robot_time_s": {
+      "R0@x=0.0": 35.7,
+      "R1@x=0.8": 44.8
+    },
+    "tilted_spots": 12
+  },
+  {
+    "design": "C_플랜지확대+첫타점이동",
+    "notes": "B + 크로스멤버 첫 타점을 구간 시작에서 80mm 로 (타점 수 13 그대로)",
+    "jph": 60,
+    "params": {
+      "flange_width": 0.03,
+      "member_wall_height": 0.12,
+      "spot_pitch": 0.05,
+      "member_y": [
+        0.12,
+        0.8
+      ],
+      "member_first_spot": 0.08
+    },
+    "spots": 75,
+    "unshootable": [],
+    "takt_s": 60.0,
+    "robot_budget_s": 45.0,
+    "robots_used": 2,
+    "robot_time_s": {
+      "R0@x=0.0": 38.9,
+      "R1@x=0.8": 41.6
+    },
+    "tilted_spots": 8
+  }
+]

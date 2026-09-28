@@ -1,0 +1,937 @@
+{
+  "assumptions": {
+    "JPH": 60,
+    "mix_new": 0.3,
+    "drift": 0.2,
+    "new_car_factor": [
+      1.15,
+      0.15
+    ],
+    "station_capex": 1.0,
+    "operator_per_year": 0.4,
+    "new_line_fixed": 10.0,
+    "years": 5
+  },
+  "work_content_s": {
+    "old": 757.1,
+    "new": 848.6
+  },
+  "existing_line_stations": 13,
+  "new_car_overloaded_stations": 1.0,
+  "alternatives": {
+    "A_혼류_그대로_random": {
+      "stations": 13,
+      "added": 0,
+      "line_stops_per_100": 29.8,
+      "stop_share_pct": 4.91,
+      "effective_jph": 57.06,
+      "cost5y": 55.4
+    },
+    "A_혼류_그대로_even": {
+      "stations": 13,
+      "added": 0,
+      "line_stops_per_100": 30.0,
+      "stop_share_pct": 4.76,
+      "effective_jph": 57.14,
+      "cost5y": 54.6
+    },
+    "B_재밸런싱_증설_random": {
+      "stations": 14,
+      "added": 1,
+      "proven_optimal": true,
+      "line_stops_per_100": 18.1,
+      "stop_share_pct": 1.18,
+      "effective_jph": 59.29,
+      "cost5y": 36.1
+    },
+    "B_재밸런싱_증설_even": {
+      "stations": 14,
+      "added": 1,
+      "proven_optimal": true,
+      "line_stops_per_100": 0.0,
+      "stop_share_pct": 0.0,
+      "effective_jph": 60.0,
+      "cost5y": 29.0
+    },
+    "C_신규라인": {
+      "stations": 14,
+      "existing": 9,
+      "new_line": 5,
+      "added": 5,
+      "line_stops_per_100": 0.0,
+      "stop_share_pct": 0.0,
+      "effective_jph": 60,
+      "cost5y": 43.0
+    }
+  },
+  "sensitivity": [
+    {
+      "fixed": 0.0,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 0.0,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 2.5,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 5.0,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 7.5,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 10.0,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 12.5,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 15.0,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 17.5,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 20.0,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 22.5,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 25.0,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 27.5,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 1e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 1.778279410038923e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 3.1622776601683795e-05,
+      "best": "A_혼류_그대로_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 5.623413251903491e-05,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.0001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.00017782794100389227,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.00031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.0005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.001,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.0017782794100389228,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.0031622776601683794,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.005623413251903491,
+      "best": "B_재밸런싱_증설_even"
+    },
+    {
+      "fixed": 30.0,
+      "margin": 0.01,
+      "best": "B_재밸런싱_증설_even"
+    }
+  ],
+  "combined": [
+    {
+      "body_design": "A_기준",
+      "line_alt": "B_재밸런싱_증설_even",
+      "unshootable": 1,
+      "weld_robots": 2,
+      "cost5y": 32.0
+    },
+    {
+      "body_design": "B_플랜지확대",
+      "line_alt": "B_재밸런싱_증설_even",
+      "unshootable": 1,
+      "weld_robots": 2,
+      "cost5y": 32.0
+    },
+    {
+      "body_design": "C_플랜지확대+첫타점이동",
+      "line_alt": "B_재밸런싱_증설_even",
+      "unshootable": 0,
+      "weld_robots": 2,
+      "cost5y": 29.0
+    }
+  ]
+}
