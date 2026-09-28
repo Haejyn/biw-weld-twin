@@ -1653,6 +1653,40 @@ async function loadSmoothMeshes() {
   syncChecks();
 }
 
+/* =====================================================================
+   녹화 모드 (?record) — README 데모 GIF 를 프레임 단위로 찍을 때만 켜진다.
+   실시간 재생을 멈추고, 시각·카메라·라인 위치를 바깥에서 한 칸씩 정한다.
+   ===================================================================== */
+if (new URLSearchParams(location.search).has("record")) {
+  controls.enableDamping = false;
+  $("stFps").style.display = "none";   // headless 소프트웨어 렌더링 fps 는 실제와 달라 녹화에서 뺀다
+  const zAxis = new THREE.Vector3(0, 0, 1);
+  window.__rec = {
+    ready: () => !!(data && view && window.__meshes && window.__aiParity),
+    pause() { setPlaying(false); setLinePlaying(false); },
+    duration: () => view?.duration ?? 0,
+    setTime(x) { t = x; applyTime(t); },
+    orbit(deg) {
+      const off = camera.position.clone().sub(controls.target).applyAxisAngle(zAxis, THREE.MathUtils.degToRad(deg));
+      camera.position.copy(controls.target).add(off);
+      controls.update();
+    },
+    dolly(k) {
+      const off = camera.position.clone().sub(controls.target).multiplyScalar(k);
+      camera.position.copy(controls.target).add(off);
+      controls.update();
+    },
+    act,
+    select,
+    showTab,
+    setLine(s) { line.s = s; drawLine(); },
+    lineEnd,
+    setBottom(px) { document.documentElement.style.setProperty("--bottom-h", `${px}px`); resize(); },
+    hideTip() { $("tip").hidden = true; ttip.hidden = true; },
+    frame: () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))),
+  };
+}
+
 boot().catch((err) => {
   console.error(err);
   $("loading").textContent = "데이터를 불러오지 못했습니다";
