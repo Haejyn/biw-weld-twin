@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>용접 라인 디지털 트윈</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%226%22 fill=%22%235ee1d4%22/%3E%3C/svg%3E">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="top">
+  <h1>용접 라인 디지털 트윈</h1>
+  <nav class="tabs" id="designTabs" role="tablist"></nav>
+</header>
+
+<main class="twin">
+  <section class="stage" id="stage">
+    <div class="loading" id="loading">불러오는 중</div>
+    <div class="tip" id="tip" hidden></div>
+    <div class="player">
+      <button class="play" id="playBtn" aria-label="재생">
+        <svg viewBox="0 0 24 24" class="ic-play"><path d="M8 5.5v13l11-6.5z"/></svg>
+        <svg viewBox="0 0 24 24" class="ic-pause"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+      </button>
+      <input type="range" id="timeSlider" min="0" max="1" step="0.01" value="0" aria-label="시간">
+      <span class="time" id="timeLabel">0.0 s</span>
+      <div class="speeds" id="speeds">
+        <button data-speed="1">1×</button>
+        <button data-speed="4" class="on">4×</button>
+        <button data-speed="10">10×</button>
+      </div>
+    </div>
+  </section>
+
+  <aside class="side">
+    <div class="card" id="numbers"></div>
+    <div class="card legend" id="legend">
+      <div class="lg"><i class="dot r0"></i><span id="lg0">로봇 1 담당</span></div>
+      <div class="lg"><i class="dot r1"></i><span id="lg1">로봇 2 담당</span></div>
+      <div class="lg"><i class="x">×</i>못 쏘는 타점</div>
+      <div class="lg"><i class="dot ghost"></i>비어 있는 후보 위치</div>
+    </div>
+  </aside>
+</main>
+
+<section class="line">
+  <div class="line-head">
+    <h2>혼류 라인 · 60대 투입</h2>
+    <div class="line-ctl">
+      <button class="play small" id="linePlay" aria-label="라인 재생">
+        <svg viewBox="0 0 24 24" class="ic-play"><path d="M8 5.5v13l11-6.5z"/></svg>
+        <svg viewBox="0 0 24 24" class="ic-pause"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+      </button>
+      <button class="chip" id="lineReset">처음부터</button>
+      <span class="line-key"><i class="car old"></i>기존 차 <i class="car new"></i>신차</span>
+    </div>
+  </div>
+  <div class="alts" id="alts"></div>
+</section>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

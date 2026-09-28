@@ -4,3 +4,4 @@ __pycache__/
 data/salbp/salbp.zip
 data/gen/
 models/
+viewer/ai/model.json
