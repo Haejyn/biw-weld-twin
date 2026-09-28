@@ -8,9 +8,10 @@
 | 단계 | 무엇 | 도구 |
 |---|---|---|
 | 1 선행구조 검토 | 차체 하위 조립품 스폿 타점 75개 × 로봇 후보 4곳 — 도달·관절 한계·용접건/팔 간섭·사이클타임 → 로봇 배정·대수 | KUKA KR210 L150 기구학(ROS-Industrial), 역기구학, CP-SAT |
-| 2 AI 제조성 판정 | 설계 변형 2,400개를 시뮬레이터로 만들어 학습 → 설계 변수만 보고 못 쏘는 타점 예측, 원인 설명, 설계 탐색 | LightGBM, SHAP |
+| 2 AI 제조성 판정 | 설계 변형 2,400개(학습 2,000 · 시험 400)를 시뮬레이터로 만들어 학습 → 설계 변수만 보고 못 쏘는 타점 예측, 원인 설명, 설계 탐색 | LightGBM, SHAP |
 | 3 혼류 투입 검토 | 기존 라인에 신차를 섞을 때 그대로 / 재밸런싱+증설 / 신규 라인 — 라인 정지·실제 JPH·5년 비용 | SALBP 벤치마크, CP-SAT, 라인 시뮬레이션 |
 | 4 디지털 트윈 화면 | 로봇이 용접 순서대로 움직이는 3D, 설계안 비교, 혼류 라인 흐름, 슬라이더로 AI 즉시 판정 | three.js |
+| 5 CAD 내보내기 | 설계안별 차체 STEP(부품 4 + 타점 75, 다시 읽어 검증) + 타점 목록 CSV(좌표·법선·판정·담당 로봇·이유) | CadQuery |
 
 ## 1. 선행구조 검토
 
@@ -91,19 +92,20 @@
 - 라인밸런싱(CP-SAT): 공개 최적해 12문제 중 11 일치 (ARC83 4/4, Hahn 4/4, Warnecke 3/4 — c=56 은 30 s 제한에서 30, 최적 29)
 - AI: 학습과 분리한 시험 설계 400개, 지도 64/64, 경계 31점 29/31, 탐색 20/20 시뮬레이터 재검증
 - 3D 화면: 파이썬 역기구학과 좌표 일치(최대 오차 0.000004 mm)
-- `pytest tests` — 역기구학 도달/실패, 건 간섭, 기울여 피하기, 벤치마크 최적해, 정지 시뮬레이션 손계산
+- CAD: STEP 을 다시 읽어 솔리드 79개(부품 4 + 타점 75)·경계 2400×1013×1153 mm 확인
+- `pytest tests` 13개 — 역기구학 도달/실패, 건 간섭, 기울여 피하기, 벤치마크 최적해, 정지 시뮬레이션 손계산, 로봇 조합 배정, AI 특징 순서, AI 판정 방향
 
 ## 돌리기
 
 ```
-python -m venv .venv && .venv\Scripts\pip install ortools ikpy numpy matplotlib openpyxl pytest lightgbm scikit-learn
+python -m venv .venv && .venv\Scripts\pip install -r requirements.txt
 cd src
 ..\.venv\Scripts\python stage1.py          # 설계안 A/B/C, JPH 별 로봇 대수
 ..\.venv\Scripts\python stage2.py          # 혼류 대안
 ..\.venv\Scripts\python dataset.py 2000 9 0 && ..\.venv\Scripts\python dataset.py 400 9 1   # 약 20분
 ..\.venv\Scripts\python surrogate.py       # AI 학습·시험
 ..\.venv\Scripts\python explore.py         # 제조성 지도·설계 탐색·재검증 (약 10분)
-..\.venv\Scripts\python export_twin.py && ..\.venv\Scripts\python figures.py
+..\.venv\Scripts\python export_twin.py && ..\.venv\Scripts\python export_cad.py && ..\.venv\Scripts\python figures.py
 ```
 
 ## 한계

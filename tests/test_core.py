@@ -57,3 +57,55 @@ def test_one_overloaded_station_stops_the_line_by_the_overflow():
     r = simulate([60], [80], 60, [True])   # 여유창 72 → 8 만큼 정지
     assert r["line_stops_per_100"] == 100
     assert r["stop_share_pct"] == pytest.approx(100 * 8 / 68, abs=0.01)
+
+
+# ── 로봇 배정 · AI ──
+from reach import Verdict  # noqa: E402
+from stage1 import plan_robots  # noqa: E402
+
+
+def _q(a1_deg):
+    q = np.zeros(9)
+    q[1] = np.radians(a1_deg)
+    q[3] = np.radians(-90)
+    return q
+
+
+def test_plan_uses_one_robot_when_one_can_do_everything_in_budget():
+    ver = {(i, r): Verdict(True, "ok", _q(i)) for i in range(5) for r in range(2)}
+    plan, times = plan_robots(ver, list(range(5)), 2, budget=45)
+    assert len(plan) == 1 and max(times.values()) <= 45
+
+
+def test_plan_needs_two_robots_when_reach_is_split():
+    ver = {}
+    for i in range(6):
+        for r in range(2):
+            ver[i, r] = Verdict((i < 3) == (r == 0), "ok", _q(i)) if (i < 3) == (r == 0) else Verdict(False, "unreachable")
+    plan, _ = plan_robots(ver, list(range(6)), 2, budget=45)
+    assert sorted(len(v) for v in plan.values()) == [3, 3]
+
+
+def test_ai_features_follow_label_order():
+    from dataset import label
+    from explore import BASE_A
+    from surrogate import design_features
+    _, rows = label((0, BASE_A))
+    X = design_features(BASE_A)
+    assert len(rows) == len(X) == 75 * 4
+    assert [(i, r) for _, i, r, *_ in rows] == [(i, r) for i in range(75) for r in range(4)]
+
+
+MODEL = Path(__file__).resolve().parent.parent / "models" / "surrogate.txt"
+
+
+@pytest.mark.skipif(not MODEL.exists(), reason="python src/surrogate.py 로 모델을 먼저 만든다")
+def test_ai_flags_the_bad_first_spot_and_clears_a_far_one():
+    import json
+    import lightgbm as lgb
+    from explore import BASE_A, fast_predict
+    thr = json.loads((MODEL.parent.parent / "results" / "surrogate.json").read_text())["threshold"]
+    m = lgb.Booster(model_file=str(MODEL))
+    near, far = dict(BASE_A, member_first_spot=0.02), dict(BASE_A, member_first_spot=0.12)
+    got = fast_predict(m, thr, [near, far])
+    assert got[0] >= 1 and got[1] == 0

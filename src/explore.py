@@ -19,7 +19,7 @@ warnings.filterwarnings("ignore")
 import lightgbm as lgb  # noqa: E402
 
 from dataset import PARAMS, SPACE, label  # noqa: E402
-from surrogate import design_features, spot_level  # noqa: E402
+from surrogate import design_features  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "results"

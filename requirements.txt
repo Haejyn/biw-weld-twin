@@ -1,0 +1,9 @@
+numpy
+matplotlib
+ortools
+ikpy
+lightgbm
+scikit-learn
+cadquery
+openpyxl
+pytest
