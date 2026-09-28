@@ -40,6 +40,10 @@ def test_tilting_away_clears_the_wall():
     assert v.ok and v.tilt > 0
 
 
+SALBP = Path(__file__).resolve().parent.parent / "data" / "salbp" / "precedence graphs"
+
+
+@pytest.mark.skipif(not SALBP.exists(), reason="python src/fetch_data.py 로 벤치마크를 먼저 받는다")
 @pytest.mark.parametrize("name,cycle,known", [("ARC83", 3786, 21), ("ARC83", 4454, 18), ("HAHN", 2004, 8)])
 def test_balance_matches_published_optimum(name, cycle, known):
     t, p = load(name)

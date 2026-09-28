@@ -87,7 +87,7 @@
 | 기존 라인 작업·선후관계: Scholl(1993) SALBP ARC83 | 용접건 치수, 타점당 0.7 s, 이송·클램프 15 s, 가감속 보정 |
 | 라인밸런싱 풀이기: 공개 최적해와 대조 | 신차 작업시간 배수, 여유창 20 %, 비용 단가(상대 단위) |
 
-실제 기아 데이터는 쓰지 않았다. 가정은 `src/stage1.py`, `src/stage2.py`, `src/dataset.py` 맨 위에 모여 있다.
+실제 완성차 공장 데이터는 쓰지 않았다. 가정은 `src/stage1.py`, `src/stage2.py`, `src/dataset.py` 맨 위에 모여 있다.
 
 ## 검증
 
@@ -101,6 +101,7 @@
 
 ```
 python -m venv .venv && .venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python src\fetch_data.py   # SALBP 벤치마크 내려받기 (저장소에 넣지 않음)
 cd src
 ..\.venv\Scripts\python stage1.py          # 설계안 A/B/C, JPH 별 로봇 대수
 ..\.venv\Scripts\python stage2.py          # 혼류 대안
@@ -109,6 +110,10 @@ cd src
 ..\.venv\Scripts\python explore.py         # 제조성 지도·설계 탐색·재검증 (약 10분)
 ..\.venv\Scripts\python export_twin.py && ..\.venv\Scripts\python export_cad.py && ..\.venv\Scripts\python figures.py
 ```
+
+## 출처
+
+외부 자료와 라이선스는 `NOTICE.md`. 코드는 MIT.
 
 ## 한계
 
