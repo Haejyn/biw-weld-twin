@@ -210,3 +210,32 @@ def test_forced_action_cannot_bypass_submit_rules():
         return {"role": "assistant", "content": ""}
     r = DesignAgent(FakeBackend(), llm).run(START, "x", Constraints())
     assert r["success"] is False and r["trace"][0]["result"]["accepted"] is False
+
+
+def test_search_returns_constraint_satisfying_candidates_nearest_first():
+    a = agent_with(None, Constraints({"member_first_spot": {"max": 60.0}}))
+    r = a.call("search", {"k": 4})
+    assert "error" not in r and len(r["candidates"]) == 4
+    dists = [c["dist"] for c in r["candidates"]]
+    assert dists == sorted(dists)
+    assert all(c["predicted_unshootable"] == 0 for c in r["candidates"])
+    for c in r["candidates"]:
+        d = dict(START, **c["design"])
+        assert not a.cons.violations(d)
+        assert c["design"].get("flange_width", 0) >= 20      # 가짜 시뮬레이터에서 고쳐지는 변수
+
+
+def test_search_keeps_fixed_variable_and_reports_when_nothing_passes():
+    a = agent_with(None, Constraints({"flange_width": {"fixed": 15.0}}))
+    r = a.call("search", {})
+    assert r["candidates"] and all(c["predicted_unshootable"] > 0 for c in r["candidates"])
+    assert all("flange_width" not in c["design"] for c in r["candidates"])
+
+
+def test_search_then_simulate_then_submit_flow():
+    llm = ScriptedLLM(call("search", k=3))
+    a = DesignAgent(FakeBackend(), llm)
+    a._reset(START, Constraints())
+    top = a.call("search", {"k": 3})["candidates"][0]["design"]
+    a.call("simulate", {"design": top})
+    assert a.call("submit", {"design": top, "rationale": "x"})["accepted"] is True

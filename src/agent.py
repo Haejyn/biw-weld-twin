@@ -15,6 +15,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import numpy as np  # noqa: E402
+
 from dataset import PARAMS, SPACE  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -182,6 +184,80 @@ def parse_constraints(raw, start: dict) -> Constraints:
     return Constraints(spec)
 
 
+# ── 후보 탐색 (search 도구와 평가 기준선이 같이 쓴다) ─────────────────────────────
+STAGES = (0.03, 0.06, 0.10, 0.15, 0.25, 0.40)   # 국소 탐색 반경 (변수 범위 폭의 비율)
+STAGE_N = 300                                    # 반경마다 뽑는 후보 수
+GLOBAL_N = 1500                                  # 국소 탐색으로 모자랄 때 뽑는 전역 후보 수 (explore.py 와 같은 분포)
+
+
+def free_vars(cons: Constraints) -> list:
+    return [k for k in VARS if cons.bounds(k)[0] != cons.bounds(k)[1]]
+
+
+def local_candidates(base: dict, cons: Constraints, radius: float, n: int, rng) -> list:
+    """base 주변 섭동. 절반은 변수 1~3개만, 절반은 자유 변수 전부를 +-radius*범위 안에서 흔든다. 제약 안으로 자른다."""
+    free = free_vars(cons)
+    out = []
+    for i in range(n):
+        d = dict(base)
+        m = int(rng.integers(1, 4)) if i % 2 == 0 else len(free)
+        for k in rng.choice(free, size=min(m, len(free)), replace=False):
+            lo, hi = cons.bounds(k)
+            w = RANGE[k][1] - RANGE[k][0]
+            d[k] = float(np.clip(base[k] + rng.uniform(-radius, radius) * w, lo, hi))
+        out.append(d)
+    return out
+
+
+def global_candidates(start: dict, cons: Constraints, n: int, rng) -> list:
+    """explore.py 의 후보 생성: 시작 설계 주변 정규분포(범위 폭의 0.25배), 제약 안으로 자른다."""
+    out = []
+    for _ in range(n):
+        d = {}
+        for k in VARS:
+            lo, hi = cons.bounds(k)
+            d[k] = lo if lo == hi else float(np.clip(start[k] + rng.normal(0, 0.25) * (RANGE[k][1] - RANGE[k][0]), lo, hi))
+        out.append(d)
+    return out
+
+
+def search_candidates(count_many, start: dict, base: dict, cons: Constraints, k: int = 5, seed: int = 0):
+    """제약을 만족하는 후보를 반경을 넓혀 가며 훑어, 예측 0개인 것이 k개 모이면 멈춘다.
+    돌려주는 것: (start 에 가까운 순 상위 k개 [(거리, 예측 개수, 설계)], 훑은 후보 수)"""
+    seen, pool = set(), []
+
+    def scan(cands):
+        fresh = [c for c in cands if tuple(round(c[v], 2) for v in VARS) not in seen]
+        for c in fresh:
+            seen.add(tuple(round(c[v], 2) for v in VARS))
+        for c, n in zip(fresh, count_many(fresh)):
+            pool.append((norm_dist(c, start), n, c))
+        return sum(1 for _, n, _ in pool if n == 0)
+
+    zeros = 0
+    for i, r in enumerate(STAGES):
+        zeros = scan(local_candidates(base, cons, r, STAGE_N, np.random.default_rng(seed * 100 + i)))
+        if zeros >= k:
+            break
+    if zeros < k and free_vars(cons):
+        scan(global_candidates(start, cons, GLOBAL_N, np.random.default_rng(seed * 100 + 99)))
+    # 예측 0개인 상위 후보에서 필요 없는 변경을 하나씩 되돌려 본다 (되돌려도 예측 0개면 되돌린 채로 둔다)
+    for _, n, c in sorted((t for t in pool if t[1] == 0), key=lambda t: t[0])[:8]:
+        cur = dict(c)
+        for v in sorted((v for v in free_vars(cons) if abs(cur[v] - start[v]) > TOL),
+                        key=lambda v: abs(cur[v] - start[v]) / (RANGE[v][1] - RANGE[v][0])):
+            trial = dict(cur, **{v: start[v]})
+            if count_many([trial])[0] == 0:
+                cur = trial
+        if cur != c:
+            key = tuple(round(cur[v], 2) for v in VARS)
+            if key not in seen:
+                seen.add(key)
+                pool.append((norm_dist(cur, start), 0, cur))
+    pool.sort(key=lambda t: (t[1] > 0, t[1], t[0]))
+    return pool[:k], len(seen)
+
+
 # ── 도구 뒷단 (실제 / 가짜 교체 가능) ───────────────────────────────────────────
 class RealBackend:
     """대리 모델과 시뮬레이터. 무거운 모듈은 처음 쓸 때 불러온다."""
@@ -211,6 +287,30 @@ class RealBackend:
         ids = [s.id for s in spots(make_design(v))]
         return {i: float(x) for i, x in zip(ids, np.asarray(p))}
 
+    def count_many(self, designs_mm: list) -> list:
+        """설계 여러 개의 예측 못 쏘는 타점 수. 같은 설계는 캐시에서, 나머지는 작업자 풀로 계산한다."""
+        cache = self.__dict__.setdefault("_cache", {})
+        keys = [tuple(round(d[v], 2) for v in VARS) for d in designs_mm]
+        todo = {k: d for k, d in zip(keys, designs_mm) if k not in cache}
+        if todo:
+            if len(todo) < 8:
+                res = [self._count_local(d) for d in todo.values()]
+            else:
+                if self.__dict__.get("_pool") is None:
+                    import multiprocessing as mp
+                    self._pool = mp.Pool(min(8, mp.cpu_count()), initializer=_worker_init)
+                res = self._pool.map(_count_one, list(todo.values()), chunksize=8)
+            cache.update(zip(todo.keys(), res))
+        return [cache[k] for k in keys]
+
+    def _count_local(self, d):
+        return sum(1 for x in self.predict(d).values() if x < self.threshold)
+
+    def close(self):
+        if self.__dict__.get("_pool") is not None:
+            self._pool.close()
+            self._pool = None
+
     @property
     def threshold(self) -> float:
         self._load()
@@ -231,6 +331,19 @@ class RealBackend:
                     counts[v.reason] = counts.get(v.reason, 0) + 1
                 out[s.id] = {"group": s.group, "reason": max(counts, key=lambda r: RANK[r]), "reasons": counts}
         return out
+
+
+_W = {}
+
+
+def _worker_init():
+    _W["be"] = RealBackend()
+
+
+def _count_one(design_mm):
+    be = _W.get("be") or RealBackend()
+    _W["be"] = be
+    return be._count_local(design_mm)
 
 
 # ── LLM ────────────────────────────────────────────────────────────────────────
@@ -262,6 +375,11 @@ TOOLS = [
         "description": "대리 모델로 못 쏘는 타점을 예측한다 (빠름, 근사). 적지 않은 변수는 시작 설계 값을 쓴다.",
         "parameters": {"type": "object", "properties": {"design": {"type": "object", "properties": DESIGN_PROP}},
                        "required": ["design"]}}},
+    {"type": "function", "function": {
+        "name": "search",
+        "description": "제약을 만족하는 후보 설계를 대리 모델로 훑어, 현재 설계(시작 설계)에 가까운 k개를 예측 못 쏘는 타점 수와 함께 돌려준다 (빠름). "
+                       "후보의 design 은 바뀐 변수만 담고 있어 그대로 simulate 에 넘길 수 있다.",
+        "parameters": {"type": "object", "properties": {"k": {"type": "integer", "description": "돌려줄 후보 수 (기본 5, 최대 8)"}}}}},
     {"type": "function", "function": {
         "name": "sensitivity",
         "description": "design 의 다른 변수는 두고 var 하나만 허용 범위에서 9점 훑어, 점마다 예측된 못 쏘는 타점 수를 돌려준다 (빠름).",
@@ -308,24 +426,25 @@ PARSE_SYSTEM = (
 
 ACTION_SCHEMA = {
     "type": "object",
-    "properties": {"tool": {"type": "string", "enum": ["predict", "sensitivity", "simulate", "submit"]},
+    "properties": {"tool": {"type": "string", "enum": ["search", "predict", "sensitivity", "simulate", "submit"]},
+                   "k": {"type": "integer"},
                    "design": {"type": "object", "properties": DESIGN_PROP},
                    "var": {"type": "string", "enum": VARS},
                    "rationale": {"type": "string"}},
-    "required": ["tool", "design"]}
+    "required": ["tool"]}
 
 AGENT_SYSTEM = (
     "너는 차체 설계 수정 도우미다. 못 쏘는 타점이 있는 설계를 제약 안에서 가장 적게 바꿔 모든 타점을 쏠 수 있게 만든다.\n"
     "길이는 mm. 도구에 설계를 넘길 때 바꾼 변수만 적어도 된다 (나머지는 시작 설계 값).\n"
-    "순서: simulate 로 시작 설계의 못 쏘는 타점과 이유를 보고, sensitivity 로 어느 변수가 효과 있는지 보고, "
-    "predict 로 후보를 거른 뒤, simulate 로 확인해서 0개면 submit 한다.\n"
+    "순서: search 로 제약을 만족하면서 시작 설계에 가까운 후보를 받는다. 예측 0개인 첫 후보부터 simulate 로 확인하고, "
+    "0개면 submit, 아니면 search 결과의 다음 후보를 simulate 한다. 같은 후보를 두 번 simulate 하지 않는다. 후보가 모두 예측 0개가 아니면 sensitivity 와 predict 로 방향을 잡아 다시 search 한다.\n"
+    "simulate 결과의 실패 이유(타점 id 와 이유)를 보고 어느 변수가 원인인지 설명할 수 있어야 한다.\n"
     "타점 이름: S = 실 위 플랜지(변수: 실 타점-B필러 간격, B필러 위치·폭, 실 윗면 높이), B = B필러 뒤 플랜지, "
     "M = 크로스멤버 플랜지(플랜지 폭, 첫 타점 거리, 높이, 위치).\n"
     "이유: unreachable 도달 불가, joint_limit 관절 한계, gun_collision 건 간섭, arm_collision 팔 간섭, approach_collision 접근 경로 간섭.\n"
     f"한도: 도구 호출 전체 {MAX_CALLS}회, simulate {MAX_SIM}회. 제약은 코드가 강제하며 어긴 값은 잘리거나 거부된다. "
     "고정된 변수는 건드리지 않는다. 변경량이 작을수록 좋다. predict 는 근사라서 submit 전에 반드시 simulate 로 확인한다.\n"
-    "못 쏘는 타점마다 관련 변수를 sensitivity 로 훑는다. 한 변수로 안 풀리면 다른 변수를 함께 바꾼다. "
-    "predict 가 0개를 보이면 바로 simulate 로 확인한다. 말만 하지 말고 매번 도구를 부른다."
+    "말만 하지 말고 매번 도구를 부른다."
 )
 
 
@@ -385,6 +504,26 @@ class DesignAgent:
             return None, None, err
         d, notes = self.cons.clamp(d)
         return d, notes, None
+
+    def t_search(self, args):
+        base, notes, err = self._clamped({"design": args.get("design") or {}})
+        if err:
+            return {"error": err}
+        try:
+            k = max(1, min(int(args.get("k", 5)), 8))
+        except (TypeError, ValueError):
+            k = 5
+        counter = getattr(self.backend, "count_many", None) or self._count_many
+        top, scanned = search_candidates(counter, self.start, base, self.cons, k)
+        out = {"scanned": scanned, "candidates": [
+            {"design": show(d, self.start), "predicted_unshootable": n, "dist": round(dist, 3)} for dist, n, d in top]}
+        if notes:
+            out["clamped"] = notes
+        return out
+
+    def _count_many(self, designs):
+        thr = self.backend.threshold
+        return [sum(1 for x in self.backend.predict(d).values() if x < thr) for d in designs]
 
     def t_predict(self, args):
         d, notes, err = self._clamped(args)
@@ -463,6 +602,10 @@ class DesignAgent:
     def _summary(self, tool, res) -> str:
         if "error" in res:
             return "오류: " + res["error"]
+        if tool == "search":
+            c = res["candidates"]
+            first = f" 첫 후보 {c[0]['design']} 예측 {c[0]['predicted_unshootable']}개 거리 {c[0]['dist']}" if c else ""
+            return f"후보 {len(c)}개 (훑은 {res['scanned']}개, 예측 0개 {sum(1 for x in c if x['predicted_unshootable'] == 0)}개){first}"
         if tool == "predict":
             return f"예측 못 쏘는 타점 {res['unshootable_count']}개 {[x['id'] for x in res['unshootable']]}"
         if tool == "sensitivity":
@@ -475,7 +618,7 @@ class DesignAgent:
         """도구 한 번 실행 + 한도 계산 + trace 기록."""
         t0 = time.time()
         self.n_calls += 1
-        fn = {"predict": self.t_predict, "sensitivity": self.t_sensitivity,
+        fn = {"search": self.t_search, "predict": self.t_predict, "sensitivity": self.t_sensitivity,
               "simulate": self.t_simulate, "submit": self.t_submit}.get(tool)
         res = fn(args) if fn else {"error": f"모르는 도구 {tool}"}
         self.trace.append({"n": self.n_calls, "tool": tool, "args": args, "summary": self._summary(tool, res),
@@ -560,9 +703,12 @@ class DesignAgent:
             m = self.llm(messages, None, ACTION_SCHEMA)
             j = json.loads(m.get("content") or "")
             name = j["tool"]
-            if name not in ("predict", "sensitivity", "simulate", "submit"):
+            if name not in ("search", "predict", "sensitivity", "simulate", "submit"):
                 return None
-            args = {k: j[k] for k in ("design", "var", "rationale") if k in j}
+            args = {k: j[k] for k in ("design", "var", "rationale", "k") if k in j}
+            args.setdefault("design", {})
+            if name != "search":
+                args.pop("k", None)
             if name != "sensitivity":
                 args.pop("var", None)
             if name != "submit":
