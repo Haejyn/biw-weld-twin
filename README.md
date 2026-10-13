@@ -153,6 +153,71 @@ flowchart LR
 - `results/cad/{A,B,C}_spots.csv` — id · 부위 · 좌표 mm · 법선 · OK/NG · 담당 로봇 · 못 쏘는 이유
 - 검증: STEP 재읽기 → 솔리드 90개 · 경계 2400 × 981 × 1250 mm
 
+## 6. AI 설계 수정 에이전트
+
+못 쏘는 타점이 있는 설계와 한국어 제약을 받아, 제약을 지키면서 가장 적게 바꾼 수정안을 찾는다. LLM(Ollama `qwen3.5:4b`)이 도구를 불러 조사하고, 시뮬레이터가 확인한 설계만 제출할 수 있다. 코드는 `src/agent.py`, 평가는 `scripts/agent_eval.py`, 평가 기록은 [`docs/agent_eval.md`](docs/agent_eval.md).
+
+| LLM 이 정하는 것 | 코드가 강제하는 것 |
+|---|---|
+| 요청 문장을 제약 JSON 으로 옮김 (변수별 고정 / 최소 / 최대) | 제약을 변수 범위(`dataset.SPACE`)와 대조해 검증. 범위 밖 값이나 없는 변수는 거부, 해석한 제약은 출력에 그대로 표시 |
+| 어떤 도구를 어떤 설계로 부를지 (`search` 후보 중 무엇을 `simulate` 할지, `simulate` 실패 이유 설명) | `predict` · `sensitivity` · `simulate` 는 인자를 제약과 범위 안으로 잘라서 쓰고, 고정 변수는 시작값으로 되돌림. `submit` 은 자르지 않고 거부 |
+| 어느 변수를 얼마나 바꿀지 | 도구 호출 12회, `simulate` 4회 한도. 넘으면 "실패: 한도 초과" 와 시뮬레이션한 것 중 가장 나은 설계를 돌려줌 |
+| 언제 제출할지, 근거 문장 | `submit` 승인 조건: 가장 최근 `simulate` 가 바로 이 설계였고, 못 쏘는 타점이 0개이고, 제약을 모두 지킴 |
+
+| 도구 | 하는 일 | 비용 |
+|---|---|---|
+| `search(design, k)` | 제약을 만족하는 후보를 대리 모델로 훑어 시작 설계에 가까운 k개와 예측 못 쏘는 타점 수를 돌려줌 (국소 탐색 + 전역 후보, 예측 캐시) | 처음 약 25 s, 같은 설계는 캐시 |
+| `predict(design)` | 대리 모델이 예측한 못 쏘는 타점 id 와 쏠 수 있을 확률 | 약 0.05 s |
+| `sensitivity(design, var)` | 한 변수를 허용 범위에서 9점 훑었을 때 예측 못 쏘는 타점 수 | 약 0.5 s |
+| `simulate(design)` | 시뮬레이터 판정. 타점별 실패 이유(도달 불가 · 관절 한계 · 건 간섭 · 팔 간섭 · 접근 경로 간섭) | 약 15 s, 4회 |
+| `submit(design, rationale)` | 위 조건을 만족하면 최종안으로 승인, 아니면 문제 목록 | 즉시 |
+
+모든 호출은 도구, 인자, 결과 요약, 걸린 시간(ms)과 함께 trace 로 남는다. LLM 호출 함수는 바꿔 끼울 수 있어 `tests/test_agent.py` 는 Ollama 없이 가짜 LLM 으로 돈다.
+
+```
+python -m src.agent --design A --request "못 쏘는 타점이 없게 최소한만 고쳐줘"
+python -m src.agent --design C --request "플랜지 폭은 그대로, 첫 타점 거리는 60 이하"
+```
+
+`--design` 은 `A` · `B` · `C` 또는 mm 단위 JSON(빠진 변수는 A 값). trace 는 `results/agent_trace_last.json` 에 저장된다.
+
+예: 설계 A, 요청 "플랜지 폭은 그대로, 첫 타점 거리는 60 이하"
+
+```
+해석한 제약: 플랜지 폭(flange_width) = 15 고정, 첫 타점 거리(member_first_spot) <= 60
+ 1. search      후보 5개 (훑은 1807개, 예측 0개 5개) 첫 후보 {'member_first_spot': 38.7, 'member_y0': 154.1, 'sill_pillar_gap': 44.9} 예측 0개 거리 0.284  (25096 ms)
+ 2. simulate    시뮬레이션 못 쏘는 타점 0개 {}  (17029 ms)
+ 3. submit      제출 승인
+결과: 성공 · member_first_spot 30->38.7, member_y0 120->154.1, sill_pillar_gap 30->44.9 (mm) · 변경 거리 0.284 · simulate 1회 · 61.9 s
+```
+
+`search` 를 넣기 전에는 같은 요청이 도구 호출 12회를 다 쓰고 "실패: 한도 초과" 로 끝났다 (12번째 호출에서 0개인 설계를 확인했지만 `submit` 을 부를 호출이 없었다).
+
+평가 결과. 시작 설계 12개(시험 설계 10 + 설계 A, B) × 조건 2. 기준선은 `explore.py` 방식을 시작 설계마다 적용한 것이고, "기준선 + 국소 탐색" 은 `search` 와 같은 국소 탐색 후보를 기준선에도 더한 것이다. 전체 표와 한계는 [`docs/agent_eval.md`](docs/agent_eval.md).
+
+조건 1 (제약 없음)
+
+| 항목 | 에이전트 (search 추가) | 에이전트 이전 (search 도구 없음) | 기준선 이전 | 기준선 + 국소 탐색 |
+|---|---|---|---|---|
+| 성공 | 12/12 (100 %) | 8/12 (67 %) | 12/12 (100 %) | 12/12 (100 %) |
+| 시뮬레이터 호출 (평균 / 중앙값) | 1.8 / 2 | 2.6 / 2 | 1.3 / 1 | 3.0 / 3 |
+| 걸린 시간 (평균 / 중앙값, 초) | 66 / 63 | 86 / 57 | 1079 / 1081 | 1368 / 1378 |
+| 변경 거리 (성공한 실행의 중앙값) | 0.336 (n=12) | 0.434 (n=8) | 0.448 (n=12) | 0.316 (n=12) |
+
+조건 2 (기준선이 가장 많이 바꾼 변수 하나를 고정)
+
+| 항목 | 에이전트 (search 추가) | 에이전트 이전 (search 도구 없음) | 기준선 이전 | 기준선 + 국소 탐색 |
+|---|---|---|---|---|
+| 성공 | 3/12 (25 %) | 1/12 (8 %) | 4/12 (33 %) | 4/12 (33 %) |
+| 시뮬레이터 호출 (평균 / 중앙값) | 3.1 / 4 | 2.3 / 2 | 0.4 / 0 | 1.0 / 0 |
+| 걸린 시간 (평균 / 중앙값, 초) | 133 / 147 | 111 / 108 | 977 / 975 | 1277 / 1272 |
+| 변경 거리 (성공한 실행의 중앙값) | 0.379 (n=3) | 0.104 (n=1) | 0.463 (n=4) | 0.337 (n=4) |
+
+- 이번 실행은 이 평가만 단독으로 돌려 전체 3049 s 가 걸렸다 (기준선 국소 탐색 658 s, 에이전트 2389 s).
+- 조건 2 의 실패 9건 중 8건은 도구 호출 한도 소진이다. 기준선도 국소 탐색을 더해 새로 찾은 설계가 없었고(성공 4/12 그대로), 두 방식이 모두 실패한 8건은 이 샘플링으로 해를 찾지 못했다는 뜻이며 해가 없다는 증거는 아니다.
+- 기준선 시간은 후보 10,000개를 대리 모델에 넣는 단계가 대부분이고 작업자 12개를 동시에 돌려 잰 값이다. 에이전트 시간은 LLM 응답 대기를 포함한다.
+- 시뮬레이터 호출은 대리 모델이 0개로 본 후보가 실제로는 1개 남는 경우(설계 A, 조건 2)에 늘어난다. `search` 가 시작 설계에 가까운 순으로 돌려주기 때문에 후보가 경계 근처에 모인다.
+
 ## Data Sources and Assumptions
 
 | 공개 자료 | 가정 |
@@ -200,6 +265,8 @@ cd src
 ..\.venv\Scripts\python explore.py             # 지도 · 경계 · 탐색 · 전체 시뮬레이션 확정 (약 25분)
 ..\.venv\Scripts\python export_twin.py && ..\.venv\Scripts\python export_cad.py
 cd .. && .venv\Scripts\python scripts\make_readme_figures.py
+.venv\Scripts\python -m src.agent --design A --request "못 쏘는 타점이 없게 최소한만 고쳐줘"   # 설계 수정 에이전트 (Ollama 필요)
+.venv\Scripts\python scripts\agent_eval.py   # 에이전트 평가 (수 시간, Ollama 필요)
 ```
 
 디지털 트윈 뷰어는 `open_viewer.cmd` 로 연다.
@@ -208,12 +275,12 @@ cd .. && .venv\Scripts\python scripts\make_readme_figures.py
 
 ```
 src/        robot · body (판재) · reach (판정 · 접근 경로) · paths (순서 · 경유 · 인터록) · stage1 (배치 · 배정)
-            stage2 (혼류 · 비용) · dataset · surrogate · explore (AI) · export_twin · export_cad · fetch_data
+            stage2 (혼류 · 비용) · dataset · surrogate · explore (AI) · agent (설계 수정 에이전트) · export_twin · export_cad · fetch_data
 viewer/     three.js 디지털 트윈 (index.html · app.js · ai.js · ai/trees.json · meshes/)
 results/    결과 JSON · STEP · 타점 CSV
 data/       로봇 모델 · 공개 단가 (costs_sources.json)
 docs/       README 그림 · 데모 영상 · costs.md
-scripts/    README 그림 생성
+scripts/    README 그림 생성 · 에이전트 평가 (agent_eval.py)
 tests/      pytest
 ```
 
